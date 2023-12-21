@@ -1,0 +1,128 @@
+---
+title: "Scotland Admixture Plots"
+output: html_notebook
+author: "Krisztian Nemeth"
+date: "19/12/2023"
+output:
+  word_document: default
+  html_document: default
+---
+Install relevant packages and set directory to where data is stored.
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+if (!require("data.table", quietly = TRUE))
+  install.packages("data.table")
+library(data.table)
+knitr::opts_knit$set(root.dir = "C:/Users/krinem/OneDrive - UKCEH/fastStructure")
+```
+Read in Population data in the same order as the fastStructure output. Columns include Source, Lat, Long etc. Read in the desired order file which is a list of taxa names in the desired order for the output fastStructure plot, in this case the taxa are ordered by Longitute, from West to East. 
+
+```{r}
+# Read population data from a file
+Populations_data <- read.table("newLEAFgenotypes_Mothers+Native_NoWCRegenOrDups_PopulationData.txt", header = TRUE, sep = "\t")
+
+# Read the desired order from a file
+Desired_order <- read.csv("newLEAFgenotypes_Mothers+Native_NoWCRegenOrDups_DesiredOrder.txt", header = FALSE)[, 1]
+```
+
+Read in the meanQ matrix for K = 2. This was produced in fastStructure using CV = 5. Set your  colours for the respective K. Set breaks and spaces for the plot. 
+
+```{r}
+QMatrix_K2 <- read.table("newLEAFgenotypes_Mothers+Native_NoWCRegenOrDups.2.meanQ", header = FALSE, sep = "")
+mergedQMatrix_K2 <- cbind(Populations_data, QMatrix_K2)
+mergedQMatrix_K2 <- mergedQMatrix_K2[order(match(mergedQMatrix_K2$Taxa, Desired_order)), ]
+
+# Define colors for the barplot
+col = c("#b98d3e","#9970c1")
+
+# Find breakpoints between different populations
+breaks <- 0
+for (i in 2:nrow(mergedQMatrix_K2)) {
+  if (mergedQMatrix_K2$Source[i] != mergedQMatrix_K2$Source[i - 1]) {
+    breaks <- c(breaks, i - 1)
+  }
+}
+breaks <- c(breaks, nrow(mergedQMatrix_K2))
+
+# Calculate spaces and labels for the barplot
+spaces <- rep(0, nrow(mergedQMatrix_K2))
+spaces[breaks[2:(length(breaks) - 1)] + 1] <- 2
+labels <- rep("", nrow(mergedQMatrix_K2))
+labels[breaks[1:(length(breaks) - 1)] + ((breaks[2:length(breaks)] - breaks[1:(length(breaks) - 1)]) / 2)] <- gsub("_", " ", mergedQMatrix_K2$Source[breaks])
+
+# Create the barplot
+barplot(t(as.matrix(mergedQMatrix_K2[, 5:6])), col = col, xaxt = "n", border = NA, xlim = c(0, nrow(mergedQMatrix_K2)), width = 1, space = spaces, names.arg = rep("", nrow(mergedQMatrix_K2)), ylab = "Admixture coefficients", cex.lab = 2)
+
+# Add x-axis labels with line breaks
+axis(1, line = -0.2, at = breaks[1:(length(breaks) - 1)] + ((0:(length(breaks) - 2)) * 2) + ((breaks[2:length(breaks)] - breaks[1:(length(breaks) - 1)]) / 2), lwd = 0, lwd.ticks = 1, labels = gsub("_", " ", mergedQMatrix_K2$Source[breaks]), las = 2, cex.axis = 1.5)
+
+```
+
+```{r}
+QMatrix_K3 <- read.table("newLEAFgenotypes_Mothers+Native_NoWCRegenOrDups.3.meanQ", header = FALSE, sep = "")
+mergedQMatrix_K3 <- cbind(Populations_data, QMatrix_K3)
+mergedQMatrix_K3 <- mergedQMatrix_K3[order(match(mergedQMatrix_K3$Taxa, Desired_order)), ]
+
+
+# Define colors for the barplot
+col = c("#b98d3e","#9970c1","#64a860")
+
+# Find breakpoints between different populations
+breaks <- 0
+for (i in 2:nrow(mergedQMatrix_K3)) {
+  if (mergedQMatrix_K3$Source[i] != mergedQMatrix_K3$Source[i - 1]) {
+    breaks <- c(breaks, i - 1)
+  }
+}
+breaks <- c(breaks, nrow(mergedQMatrix_K3))
+
+# Calculate spaces and labels for the barplot
+spaces <- rep(0, nrow(mergedQMatrix_K3))
+spaces[breaks[2:(length(breaks) - 1)] + 1] <- 2
+labels <- rep("", nrow(mergedQMatrix_K3))
+labels[breaks[1:(length(breaks) - 1)] + ((breaks[2:length(breaks)] - breaks[1:(length(breaks) - 1)]) / 2)] <- gsub("_", " ", mergedQMatrix_K3$Source[breaks])
+
+# Create the barplot
+barplot(t(as.matrix(mergedQMatrix_K3[, 5:7])), col = col, xaxt = "n", border = NA, xlim = c(0, nrow(mergedQMatrix_K3)), width = 1, space = spaces, names.arg = rep("", nrow(mergedQMatrix_K3)), ylab = "Admixture coefficients", cex.lab = 2)
+
+# Add x-axis labels with line breaks
+axis(1, line = -0.2, at = breaks[1:(length(breaks) - 1)] + ((0:(length(breaks) - 2)) * 2) + ((breaks[2:length(breaks)] - breaks[1:(length(breaks) - 1)]) / 2), lwd = 0, lwd.ticks = 1, labels = gsub("_", " ", mergedQMatrix_K3$Source[breaks]), las = 2, cex.axis = 1.5)
+```
+
+```{r}
+QMatrix_K4 <- read.table("newLEAFgenotypes_Mothers+Native_NoWCRegenOrDups.4.meanQ", header = FALSE, sep = "")
+mergedQMatrix_K4 <- cbind(Populations_data, QMatrix_K4)
+mergedQMatrix_K4 <- mergedQMatrix_K4[order(match(mergedQMatrix_K4$Taxa, Desired_order)), ]
+
+# Define colors for the barplot
+col = c("#b98d3e","#9970c1","#64a860","#cc545e")
+
+# Find breakpoints between different populations
+breaks <- 0
+for (i in 2:nrow(mergedQMatrix_K4)) {
+  if (mergedQMatrix_K4$Source[i] != mergedQMatrix_K4$Source[i - 1]) {
+    breaks <- c(breaks, i - 1)
+  }
+}
+breaks <- c(breaks, nrow(mergedQMatrix_K4))
+
+# Calculate spaces and labels for the barplot
+spaces <- rep(0, nrow(mergedQMatrix_K4))
+spaces[breaks[2:(length(breaks) - 1)] + 1] <- 2
+labels <- rep("", nrow(mergedQMatrix_K4))
+labels[breaks[1:(length(breaks) - 1)] + ((breaks[2:length(breaks)] - breaks[1:(length(breaks) - 1)]) / 2)] <- gsub("_", " ", mergedQMatrix_K4$Source[breaks])
+
+# Create the barplot
+barplot(t(as.matrix(mergedQMatrix_K4[, 5:8])), col = col, xaxt = "n", border = NA, xlim = c(0, nrow(mergedQMatrix_K4)), width = 1, space = spaces, names.arg = rep("", nrow(mergedQMatrix_K4)), ylab = "Admixture coefficients", cex.lab = 2)
+
+# Add x-axis labels with line breaks
+axis(1, line = -0.2, at = breaks[1:(length(breaks) - 1)] + ((0:(length(breaks) - 2)) * 2) + ((breaks[2:length(breaks)] - breaks[1:(length(breaks) - 1)]) / 2), lwd = 0, lwd.ticks = 1, labels = gsub("_", " ", mergedQMatrix_K4$Source[breaks]), las = 2, cex.axis = 1.5)
+
+```
+
+  Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
