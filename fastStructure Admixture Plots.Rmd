@@ -16,7 +16,7 @@ if (!require("data.table", quietly = TRUE))
 library(data.table)
 knitr::opts_knit$set(root.dir = "C:/Users/krinem/OneDrive - UKCEH/fastStructure")
 ```
-Read in Population data in the same order as the fastStructure output. Columns include Source, Lat, Long etc. Read in the desired order file which is a list of taxa names in the desired order for the output fastStructure plot, in this case the taxa are ordered by Longitute, from West to East. test
+Read in Population data in the same order as the fastStructure output. Columns include Source, Lat, Long etc. Read in the desired order file which is a list of taxa names in the desired order for the output fastStructure plot, in this case the taxa are ordered by Longitute, from West to East. test 
 
 ```{r}
 # Read population data from a file
