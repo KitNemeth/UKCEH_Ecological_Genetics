@@ -1,0 +1,124 @@
+---
+title: "GlasshouseTrials_Psylvestris"
+author: "Krisztian Nemeth"
+date: "2024-03-06"
+output:
+  word_document: default
+  html_document: default
+  fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+if (!require("ggpubr", quietly = TRUE))
+  install.packages("ggpubr")
+library(ggpubr)
+
+if (!require("ggplot2", quietly = TRUE))
+  install.packages("ggplot2")
+library(ggplot2)
+
+if (!require("tinytex", quietly = TRUE))
+  install.packages("tinytex")
+library(tinytex)
+
+knitr::opts_knit$set(root.dir = "C:/Users/krinem/OneDrive - UKCEH")
+```
+
+## newLEAF WP3 Glasshouse Trials 
+### Pinus sylvestris 
+
+Trees all come from Poland, where three source populations each growing on different soil types, low, medium and high fertility. All originate from the same source population (Old Growth Forest). All seeds germinated on medium fertility soil and then transplanted to either low medium or high fertility soil to grow out. 	
+
+
+```{r}
+GlasshouseTrial_Psylvestris <- read.delim("GlasshouseTrial_Psylvestris.txt")
+
+GlasshouseTrial_Psylvestris$Soil.Final <- factor(GlasshouseTrial_Psylvestris$Soil.Final , levels=c("L", "M", "H"))
+
+GlasshouseTrial_Psylvestris$Family.group.final <- factor(GlasshouseTrial_Psylvestris$Family.group.final , levels=c("O", "L", "M", "H"))
+
+my_comparisons <- list( c("L", "M"), c("M", "H"), c("L", "H") )
+
+GlasshouseTrial_Psylvestris$Height.adjusted..mm. <- as.numeric(GlasshouseTrial_Psylvestris$Height.adjusted..mm.)
+```
+
+
+```{r , fig.cap = c("Figure 1: Seedling height (mm) across soil fertility categories (Low, Medium, and High). A total of 1132    seedlings were analysed. Boxplots depict the distribution of seedling heights within each soil fertility category. The colours represent different soil fertility categories. Statistical comparisons were conducted using t-tests and ANOVA.","Figure 2: Seedling diameter by base (DBB) (mm) across soil fertility categories (Low, Medium, and High). A total of 1132    seedlings were analysed. Boxplots depict the distribution of seedling DBB within each soil fertility category. The colours represent different soil fertility categories. Statistical comparisons were conducted using t-tests and ANOVA.")}
+
+HeightPlot <- ggplot(GlasshouseTrial_Psylvestris, aes(x=Soil.Final, y=Height.adjusted..mm., fill=Soil.Final)) +
+  geom_boxplot(alpha=0.7) +
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Soil Fertility") + ylab("Height (mm)") +
+  stat_compare_means(method= "t.test", comparisons = my_comparisons, label.y = c(80, 85, 90)) +
+  stat_compare_means(method= "anova", label.y = 100)
+HeightPlot
+
+GlasshouseTrial_Psylvestris$DBB..mm..01.02.24 <- as.numeric(GlasshouseTrial_Psylvestris$DBB..mm..01.02.24)
+
+DiameterPlot <- ggplot(GlasshouseTrial_Psylvestris, aes(x=Soil.Final, y=DBB..mm..01.02.24, fill=Soil.Final)) +
+  geom_boxplot(alpha=0.7) +
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Soil Fertility") + ylab("DBB (mm)") +
+  stat_compare_means(method= "t.test", comparisons = my_comparisons, label.y = c(1.3, 1.4, 1.5)) +
+  stat_compare_means(method= "anova", label.y = 1.6)
+DiameterPlot
+```
+
+
+
+
+```{r , fig.width=10, fig.height=10, fig.fullwidth=TRUE, echo=FALSE, message=FALSE, fig.cap = c("Figure 3: Seedling height (mm) across seed source families (Old growth forest, Low fertility forest, Medium fertility forest, and High fertility forest. A total of 1132    seedlings were analysed. Boxplots depict the distribution of seedling heights within each soil fertility category. The colours represent different soil fertility categories. Statistical comparisons were conducted using ANOVA.","Figure 4: Seedling diameter by base (DBB) (mm) across seed source families (Old growth forest, Low fertility forest, Medium fertility forest, and High fertility forest. A total of 1132    seedlings were analysed. Boxplots depict the distribution of seedling heights within each soil fertility category. The colours represent different soil fertility categories. Statistical comparisons were conducted using ANOVA.")}
+
+HeightPlot <- ggplot(GlasshouseTrial_Psylvestris, aes(x=Family.group.final, y=Height.adjusted..mm., fill=Soil.Final)) +
+  geom_boxplot(alpha=0.7) +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Family") + ylab("Height (mm)") +
+  stat_compare_means(method= "anova", label.y = 100)
+HeightPlot
+
+GlasshouseTrial_Psylvestris$DBB..mm..01.02.24 <- as.numeric(GlasshouseTrial_Psylvestris$DBB..mm..01.02.24)
+
+DiameterPlot <- ggplot(GlasshouseTrial_Psylvestris, aes(x=Family.group.final, y=DBB..mm..01.02.24, fill=Soil.Final)) +
+  geom_boxplot(alpha=0.7) +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Family") + ylab("DBB (mm)") +
+  stat_compare_means(method= "anova", label.y = 1.6)
+DiameterPlot
+```
+
+X axis: O = old forest (where the seed was sourced for all other forests, and which is the original (natural stand). L = low fertility, M = moderate, H = high (fertility of the soil in the forest environment)
+Don't have info for the fertility of the soil in the old forest, but would be useful to have as a baseline. - Annika 
+
+Legend: Soil fertility that seedling has been grown out in. 
+
+```{r , fig.cap = c("Figure 5: Seedling height (mm) across seed source families (Old growth forest, Low fertility forest, Medium fertility forest, and High fertility forest. A total of 1132    seedlings were analysed. Boxplots depict the distribution of seedling heights within each soil fertility category. The colours represent different seed source families. Statistical comparisons were conducted using ANOVA.","Figure 6: Seedling diameter by base (DBB) (mm) across seed source families (Old growth forest, Low fertility forest, Medium fertility forest, and High fertility forest. A total of 1132    seedlings were analysed. Boxplots depict the distribution of seedling heights within each soil fertility category. The colours represent different seed source families. Statistical comparisons were conducted using ANOVA.")}
+
+HeightPlot <- ggplot(GlasshouseTrial_Psylvestris, aes(x=Family.group.final, y=Height.adjusted..mm., fill=Family.group.final)) +
+  geom_boxplot(alpha=0.7) +
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Family") + ylab("Height (mm)") +
+  stat_compare_means(label = "p.signif", method = "t.test",
+                     ref.group = ".all.", hide.ns = TRUE) +
+  stat_compare_means(method= "anova", label.y = 100)
+HeightPlot
+
+GlasshouseTrial_Psylvestris$DBB..mm..01.02.24 <- as.numeric(GlasshouseTrial_Psylvestris$DBB..mm..01.02.24)
+
+DiameterPlot <- ggplot(GlasshouseTrial_Psylvestris, aes(x=Family.group.final, y=DBB..mm..01.02.24, fill=Family.group.final)) +
+  geom_boxplot(alpha=0.7) +
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Family") + ylab("DBB (mm)") +
+  stat_compare_means(label = "p.signif", method = "t.test",
+                     ref.group = ".all.", hide.ns = TRUE) +
+  stat_compare_means(method= "anova", label.y = 1.6)
+DiameterPlot
+```
+
+O = old forest (where the seed was sourced for all other forests, and which is the original (natural stand). L = low fertility, M = moderate, H = high (fertility of the soil in the forest environment)
+Don't have info for the fertility of the soil in the old forest, but would be useful to have as a baseline. - Annika

@@ -1,0 +1,6 @@
+new("snmfProject", snmfProject.file = "newLEAFgenotypes_Mothers+Native_NoWCRegenOrDups.snmfProject", 
+    projDir = "C:/Users/krinem/OneDrive - UKCEH/Scripts/", snmfDir = "newLEAFgenotypes_Mothers+Native_NoWCRegenOrDups.snmf/", 
+    input.file = "newLEAFgenotypes_Mothers+Native_NoWCRegenOrDups.geno", 
+    runs = list(), K = integer(0), snmfClass.files = logical(0), 
+    n = integer(0), L = integer(0), creationTime = structure(1699286875.19718, class = c("POSIXct", 
+    "POSIXt")))

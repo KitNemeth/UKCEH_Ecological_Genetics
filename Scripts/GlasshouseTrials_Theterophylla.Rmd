@@ -1,0 +1,176 @@
+---
+title: "GlasshouseTrials_Theterophylla"
+author: "Krisztian Nemeth"
+date: "2024-03-06"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+if (!require("ggpubr", quietly = TRUE))
+  install.packages("ggpubr")
+library(ggpubr)
+
+if (!require("ggplot2", quietly = TRUE))
+  install.packages("ggplot2")
+library(ggplot2)
+
+if (!require("ggstats", quietly = TRUE))
+  install.packages("ggstats")
+library(ggstats)
+
+if (!require("tinytex", quietly = TRUE))
+  install.packages("tinytex")
+library(tinytex)
+
+knitr::opts_knit$set(root.dir = "C:/Users/krinem/OneDrive - UKCEH")
+```
+
+## R Markdown
+
+```{r}
+GlasshouseTrial_Theterophylla <- read.delim("GlasshouseTrial_Theterophylla.txt")
+
+GlasshouseTrial_Theterophylla$Height..mm. <- as.numeric(GlasshouseTrial_Theterophylla$Height..mm.)
+
+GlasshouseTrial_Theterophylla$DBB..mm. <- as.numeric(GlasshouseTrial_Theterophylla$DBB..mm.)
+
+#GlasshouseTrial_Theterophylla$status <- as.factor(GlasshouseTrial_Theterophylla$status)
+
+GlasshouseTrial_Theterophylla$Type <- as.factor(GlasshouseTrial_Theterophylla$Type)
+
+GlasshouseTrial_Theterophylla$Provenance <- as.factor(GlasshouseTrial_Theterophylla$Provenance)
+
+GlasshouseTrial_Theterophylla$Collection.site..UK. <- as.factor(GlasshouseTrial_Theterophylla$Collection.site..UK.)
+
+GlasshouseTrial_TheterophyllaExtra <- GlasshouseTrial_Theterophylla[GlasshouseTrial_Theterophylla$Trial == "Extra", ]
+
+GlasshouseTrial_Theterophylla <- GlasshouseTrial_Theterophylla[GlasshouseTrial_Theterophylla$Trial == "Main", ]
+
+```
+
+```{r}
+###Height 
+
+TypePlot_Height <- ggplot(GlasshouseTrial_Theterophylla, aes(x=Type, y=GlasshouseTrial_Theterophylla$Height..mm., fill=Type)) +
+  geom_boxplot(alpha=0.7) +
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Seed source") + ylab("Height (mm)") +
+  stat_compare_means(method = "t.test",label.x = 1.5, label.y = 45) 
+
+TypePlot_Height
+
+##DBB
+TypePlot_DBB <- ggplot(GlasshouseTrial_Theterophylla, aes(x=Type, y=GlasshouseTrial_Theterophylla$DBB..mm., fill=Type)) +
+  geom_boxplot(alpha=0.7) +
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Seed source") + ylab("DBB (mm)") +
+  stat_compare_means(method = "t.test",label.x = 1.5, label.y = 1) 
+
+TypePlot_DBB
+
+TypePlot_ProportionMortality <- ggplot(GlasshouseTrial_Theterophylla) +
+  aes(x = Type, fill = status, by = Type) +
+  geom_bar(position = "fill", alpha=0.7) +
+  geom_text(stat = "prop", position = position_fill(.5)) +
+      xlab("Type") + ylab("Proportion") +
+  scale_fill_brewer(palette = "Set1", name="Status")
+TypePlot_ProportionMortality
+
+TypePlot_CountMortality <- ggplot(GlasshouseTrial_Theterophylla) +
+  aes(x = Type, fill = status, by = Type) +
+  geom_bar(alpha=0.7) +
+  geom_text(stat = "prop", position = position_stack(.5)) +
+      xlab("Type") + ylab("Count") +
+  scale_fill_brewer(palette = "Set1", name="Status")
+TypePlot_CountMortality
+
+```
+
+
+
+```{r, fig.width=10, fig.height=10, fig.fullwidth=TRUE, echo=FALSE,message=FALSE}
+###Height 
+
+OriginProvenancePlot_Height <- ggplot(GlasshouseTrial_Theterophylla, aes(x=Provenance, y=GlasshouseTrial_Theterophylla$Height..mm., fill=Type)) +
+  geom_boxplot(alpha=0.7) +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Provenance") + ylab("Height (mm)") + 
+  stat_compare_means(method= "anova", label.y = 60)
+OriginProvenancePlot_Height
+
+##DBB
+OriginProvenancePlot_DBB <- ggplot(GlasshouseTrial_Theterophylla, aes(x=Provenance, y=GlasshouseTrial_Theterophylla$DBB..mm., fill=Type)) +
+  geom_boxplot(alpha=0.7) +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Provenance") + ylab("DBB (mm)")
+OriginProvenancePlot_DBB
+
+OriginProvenancePlot_ProportionMortality <- ggplot(GlasshouseTrial_Theterophylla) +
+  aes(x = Provenance, fill = status, by = Provenance) +
+  geom_bar(position = "fill", alpha=0.7) +
+  geom_text(stat = "prop", position = position_fill(.5)) +
+      xlab("Provenance") + ylab("Proportion") +
+  scale_fill_brewer(palette = "Set1", name="Status") +
+  facet_grid(cols = vars(Type), scales = "free")
+OriginProvenancePlot_ProportionMortality
+
+OriginProvenancePlot_CountMortality <- ggplot(GlasshouseTrial_Theterophylla) +
+  aes(x = Provenance, fill = status, by = Type) +
+  geom_bar(alpha=0.7) +
+  geom_text(stat = "prop", position = position_stack(.5)) +
+      xlab("Provenance") + ylab("Count") +
+  scale_fill_brewer(palette = "Set1", name="Status") +
+    facet_grid(cols = vars(Type), scales = "free")
+OriginProvenancePlot_CountMortality
+
+```
+
+```{r}
+### Extra Trial 
+
+###Height 
+
+my_comparisons <- list( c("Inveraray", "New Forest"), c("Inveraray", "Rheidol"), c("New Forest", "Rheidol") )
+
+CollectionSitePlot_Height <- ggplot(GlasshouseTrial_TheterophyllaExtra, aes(x=GlasshouseTrial_TheterophyllaExtra$Collection.site..UK., y=GlasshouseTrial_TheterophyllaExtra$Height..mm., fill=GlasshouseTrial_TheterophyllaExtra$Collection.site..UK.)) +
+  geom_boxplot(alpha=0.7) +
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Collection Site (UK)") + ylab("Height (mm)") +
+  #stat_compare_means(method= "t.test", comparisons = my_comparisons, label.y = c(45, 50, 55), hide.ns = TRUE) +
+  stat_compare_means(method= "anova", label.y = 60)
+CollectionSitePlot_Height
+
+##DBB
+
+CollectionSitePlot_DBB <- ggplot(GlasshouseTrial_TheterophyllaExtra, aes(x=GlasshouseTrial_TheterophyllaExtra$Collection.site..UK., y=GlasshouseTrial_TheterophyllaExtra$DBB..mm., fill=GlasshouseTrial_TheterophyllaExtra$Collection.site..UK.)) +
+  geom_boxplot(alpha=0.7) +
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="Set1") +
+  xlab("Collection Site (UK)") + ylab("DBB (mm)") +
+ # stat_compare_means(method= "t.test", comparisons = my_comparisons, label.y = c(0.75, 0.8, 0.85), hide.ns = TRUE) +
+  stat_compare_means(method= "anova", label.y = 0.9)
+CollectionSitePlot_DBB
+
+CollectionSitePlot_ProportionMortality <- ggplot(GlasshouseTrial_TheterophyllaExtra) +
+  aes(x = Collection.site..UK., fill = status, by = Collection.site..UK.) +
+  geom_bar(position = "fill", alpha=0.7) +
+  geom_text(stat = "prop", position = position_fill(.5)) +
+      xlab("Collection site( )UK)") + ylab("Proportion") +
+  scale_fill_brewer(palette = "Set1", name="Status")
+CollectionSitePlot_ProportionMortality
+
+CollectionSitePlot_CountMortality <- ggplot(GlasshouseTrial_TheterophyllaExtra) +
+  aes(x = Collection.site..UK., fill = status, by = Collection.site..UK.) +
+  geom_bar(alpha=0.7) +
+  geom_text(stat = "prop", position = position_stack(.5)) +
+      xlab("Collection site (UK)") + ylab("Count") +
+  scale_fill_brewer(palette = "Set1", name="Status")
+CollectionSitePlot_CountMortality
+```
