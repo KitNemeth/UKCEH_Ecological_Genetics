@@ -56,13 +56,14 @@ Keyfile <- read.table("newLEAFgenotypes_Mothers+NationalTrustSamples_Keyfile.txt
 merged_data <- merge(df, Keyfile, by.x = "FID", by.y = "Taxa", row.names = FALSE)
 merged_data$Classification <- factor(merged_data$Classification, levels=c("Cairngorms", "Central Atlantic", "Hyper-oceanic", "Sheringham Estate", "Felbrigg Estate"))
 
+# Subset data based on specific classifications
 NationalTrust_data <- subset(merged_data, Classification %in% c("Sheringham Estate", "Felbrigg Estate"))
 
+# Read eigenvalues file and adjust proportions
 eigen_percent <- read.table("Eigenvalues_newLEAFgenotypes_Mothers+NationalTrustSamples.txt", row.names = 1, header = TRUE, sep = "\t")
-
 eigen_percent$proportion.of.total <- eigen_percent$proportion.of.total * 100
+eigen_percent <- eigen_percent[, "proportion.of.total"]
 
-eigen_percent <- eigen_percent[ ,("proportion.of.total")]
 
 ```
 
@@ -72,67 +73,81 @@ eigen_percent <- eigen_percent[ ,("proportion.of.total")]
 
 Principal Component Analysis (PCA) of genetic data simplifies the complex genetic information of individuals into key patterns, helping us visualize and understand the underlying genetic relationships within a population.
 
-```{r PC_Scotland, fig.cap = c("*Figure 1: Eco-Geographic Diversity among Native Scots Pine Trees in the UK. This Principal Component Analysis (PCA) illustrates the genetic relationships among 210 Scots pine trees from the UK inferred from 31556 SNPs. Each dot on the plot represents an individual tree, coloured by their eco-geographic classification. Putative native populations (n = 13) are labelled accordingly. The distance between dots reflects the degree of genetic difference or similarity, whereas closer dots represent closer genetic relationships. The 'Explained Variance' score quantifies how effectively the PCA simplifies the genetic information. Putative amples highlighted by red ellipse.*","*Figure 2: Provenance Variation in Native Scots Pine Trees across the UK. This Principal Component Analysis (PCA) illustrates the genetic relationships among 210 Scots pine trees from the UK inferred from 31556 SNPs. Each dot on the plot represents an individual tree, coloured by their source population. The distance between dots reflects the degree of genetic difference or similarity, whereas closer dots represent closer genetic relationships. The 'Explained Variance' score quantifies how effectively the PCA simplifies the genetic information. Putative amples highlighted by red ellipse.*")}
+```{r PC_Scotland, fig.cap = c("*Figure 1: Eco-Geographic Diversity among Native Scots Pine Trees in the UK. Principal Component Analysis plots (PCA) (A) PC1 vs. PC2. (B) PC1 vs. PC3 showing the genetic relationships among 210 Scots pine trees from the UK inferred from 31556 SNPs. Each dot on the plot represents an individual tree, coloured by their eco-geographic classification. Putative native populations (n = 13) are labelled accordingly. The distance between dots reflects the degree of genetic difference or similarity, whereas closer dots represent closer genetic relationships. The 'Explained Variance' score quantifies how effectively the PCA simplifies the genetic information. Putative native samples highlighted by red ellipse.*","*Figure 2: Provenance Variation in Native Scots Pine Trees across the UK. This Principal Component Analysis (PCA) illustrates the genetic relationships among 210 Scots pine trees from the UK inferred from 31556 SNPs. Each dot on the plot represents an individual tree, coloured by their source population. The distance between dots reflects the degree of genetic difference or similarity, whereas closer dots represent closer genetic relationships. The 'Explained Variance' score quantifies how effectively the PCA simplifies the genetic information. Putative native samples highlighted by red ellipse.*")}
 # Create a ggplot2 plot
 ClassificationPC <- ggplot(merged_data, aes(x = PC1, y = PC2, color = Classification)) +
   geom_point() +
-  labs(x = paste0("Principal component 1 (",eigen_percent[2]," %)"),
-       y = paste0("Principal component 2 (",eigen_percent[3]," %)")) +
-  scale_color_manual(values = c("#b69140",
-                                 "#8d70c9",
-                                 "#6aa74d",
-                                 "#c8588c",
-                                 "#49adad")) +
-  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color="red", type = "norm") +
+  labs(x = paste0("Principal component 1 (", eigen_percent[2], " %)"),
+       y = paste0("Principal component 2 (", eigen_percent[3], " %)")) +
+  scale_color_manual(values = c("#b69140","#8d70c9","#6aa74d","#c8588c", "#49adad")) +
+  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color = "red", type = "norm") +
   labs(color = "Classification")  # Change the legend title to "Classification"
 
 # Convert the ggplot2 plot to an interactive Plotly plot
 interactive_plotClassificationPC <- ggplotly(ClassificationPC, originalData = FALSE)  # Set originalData to FALSE
 
-# Display the interactive plot
-interactive_plotClassificationPC
-
-SourcePC <- ggplot(merged_data, aes(x = PC1, y = PC2, color = Source)) +
+ClassificationPC <- ggplot(merged_data, aes(x = PC1, y = PC3, color = Classification)) +
   geom_point() +
-  labs(x = paste0("Principal component 1 (",eigen_percent[2]," %)"),
-       y = paste0("Principal component 2 (",eigen_percent[3]," %)")) +
-  scale_color_manual(values = c("#b1346b",
-"#7cb749",
-"#5855ba",
-"#baa93f",
-"#6a83e8",
-"#c7792a",
-"#56a0e4",
-"#d15543",
-"#43c8ac",
-"#b0429b",
-"#59be79",
-"#b370d6",
-"#548030",
-"#533080",
-"#adae5f",
-"#4e62ab",
-"#af783d",
-"#a987d5",
-"#993f2d",
-"#d880cc",
-"#d0555e",
-"#7f2960",
-"#e172a3",
-"#b9475f")) +
-  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color="red", type= "norm") +
-  labs(color = "Source")  # Change the legend title to "Source"
+  labs(x = paste0("Principal component 1 (", eigen_percent[2], " %)"),
+       y = paste0("Principal component 3 (", eigen_percent[4], " %)")) +
+  scale_color_manual(values = c("#b69140","#8d70c9","#6aa74d","#c8588c", "#49adad")) +
+  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color = "red", type = "norm") +
+  labs(color = "Classification")  # Change the legend title to "Classification"
 
 # Convert the ggplot2 plot to an interactive Plotly plot
-interactive_plotSourcePC <- ggplotly(SourcePC, originalData = FALSE)  # Set originalData to FALSE
+interactive_plotClassificationPC2 <- ggplotly(ClassificationPC, originalData = FALSE)  # Set originalData to FALSE
 
-# Display the interactive plot
-interactive_plotSourcePC
+# Combine both plots into subplots with annotations
+subplot(style(interactive_plotClassificationPC, showlegend = FALSE), interactive_plotClassificationPC2, titleY = TRUE, titleX = TRUE, margin = c(0.01, 0.12, 0, 0), nrows = 1) %>%  
+  layout(annotations = list( 
+    list(x = 0, y = 1.05, text = "A", showarrow = FALSE, xref = 'paper', yref = 'paper'), 
+    list(x = 0.5, y = 1.05, text = "B", showarrow = FALSE, xref = 'paper', yref = 'paper')) 
+  ) 
+
+# # Display the interactive plot
+# #interactive_plotClassificationPC
+# 
+# #SourcePC <- ggplot(merged_data, aes(x = PC1, y = PC2, color = Source)) +
+#   geom_point() +
+#   labs(x = paste0("Principal component 1 (",eigen_percent[2]," %)"),
+#        y = paste0("Principal component 2 (",eigen_percent[3]," %)")) +
+#   scale_color_manual(values = c("#b1346b",
+# "#7cb749",
+# "#5855ba",
+# "#baa93f",
+# "#6a83e8",
+# "#c7792a",
+# "#56a0e4",
+# "#d15543",
+# "#43c8ac",
+# "#b0429b",
+# "#59be79",
+# "#b370d6",
+# "#548030",
+# "#533080",
+# "#adae5f",
+# "#4e62ab",
+# "#af783d",
+# "#a987d5",
+# "#993f2d",
+# "#d880cc",
+# "#d0555e",
+# "#7f2960",
+# "#e172a3",
+# "#b9475f")) +
+#   stat_ellipse(data = NationalTrust_data, aes(group = NULL), color="red", type= "norm") +
+#   labs(color = "Source")  # Change the legend title to "Source"
+# 
+# # Convert the ggplot2 plot to an interactive Plotly plot
+# interactive_plotSourcePC <- ggplotly(SourcePC, originalData = FALSE)  # Set originalData to FALSE
+# 
+# # Display the interactive plot
+# interactive_plotSourcePC
 
 ```
 
 ## Genetic Structure within the British Isles
-An additional 16 samples from putative Native Irish trees were included within the PCA analysis; Dale Wood in County Kerry and Rockforest in County Clare.
+An additional 17 samples from putative Native Irish trees were included within the PCA analysis: Dale Wood in County Kerry and Rockforest in County Clare.
 
 ```{r Data_BritishIsles}
 # Read in TASSEL 5 PCA values in Plink format from a text file into a data frame
@@ -144,78 +159,49 @@ Keyfile <- read.table("newLEAFgenotypes_Mothers+NationalTrustSamples_Keyfile.txt
 # Merge the two data frames based on specific columns
 merged_data <- merge(df, Keyfile, by.x = "FID", by.y = "Taxa", row.names = FALSE)
 
+# Convert "Source" column to a factor with specified levels
 merged_data$Source <- factor(merged_data$Source, levels=c("Dale Wood", "Rockforest", "Shieldaig", "Loch Clair", "Beinn Eighe", "Cona Glen", "Glen Loy", "Glen Affric", "Rhidorroch", "Glen Cannich", "Glen Einig", "Coille Coire Chuilc", "Crannach", "Alltnacaillich", "Strath Oykel", "Amat", "Meggernie", "Black Wood", "Rothiemurchus", "Abernethy", "Glen Derry", "Allt Cul", "Ballochbuie", "Glen Tanar", "Sheringham Estate", "Felbrigg Estate"))
 
+# Subset data based on specific sources
 NationalTrust_data <- subset(merged_data, Source %in% c("Sheringham Estate", "Felbrigg Estate"))
 
+# Read eigenvalues file and adjust proportions
 eigen_percent <- read.table("Eigenvalues_newLEAFgenotypes_Mothers+NationalTrustSamples+Irish.txt", row.names = 1, header = TRUE, sep = "\t")
-
 eigen_percent$proportion.of.total <- eigen_percent$proportion.of.total * 100
+eigen_percent <- eigen_percent[, "proportion.of.total"]
 
-eigen_percent <- eigen_percent[ ,("proportion.of.total")]
 ```
 
-```{r PC_BritishIsles, fig.cap = "*Figure 3: Genetic Relationships of Scots Pine Trees of the British Isles. Principal Component Analysis plots (PCA) (A) PC1 vs. PC2. (B) PC2 vs. PC3 showing the genetic relationships among 55 Scots pine trees from the British Isles inferred from 5849 SNPs. Each dot on the plot represents an individual tree, coloured by their source population. The distance between dots reflects the degree of genetic difference or similarity, whereas closer dots represent closer genetic relationships. The \"Explained Variance\" score quantifies how effectively the PCA simplifies the genetic information. Putative amples highlighted by red ellipse.*"}
+```{r PC_BritishIsles, fig.cap = "*Figure 2: Genetic Relationships of Scots Pine Trees of the British Isles. Principal Component Analysis plots (PCA) (A) PC1 vs. PC2. (B) PC1 vs. PC3 showing the genetic relationships among 55 Scots pine trees from the British Isles inferred from 5849 SNPs. Each dot on the plot represents an individual tree, coloured by their source population. The distance between dots reflects the degree of genetic difference or similarity, whereas closer dots represent closer genetic relationships. The \"Explained Variance\" score quantifies how effectively the PCA simplifies the genetic information. Putative native samples highlighted by red ellipse.*"}
 # Create a ggplot2 plot
-
 PC <- ggplot(merged_data, aes(x = PC1, y = PC2, color = Source)) +
   geom_point() +
-  labs(x = paste0("Principal component 1 (",eigen_percent[2]," %)"),
-       y = paste0("Principal component 2 (",eigen_percent[3]," %)")) +
-  scale_color_manual(values = c("#ce5183",
-"#5ec671",
-"#b858b8",
-"#9ab03e",
-"#5a57bc",
-"#d09538",
-"#6f81e7",
-"#629142",
-"#543382",
-"#45c097",
-"#8a2a66",
-"#a0803a",
-"#628dd4",
-"#bb5338",
-"#ba84d5",
-"#ba4758",
-"#d976b6")) +
-  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color="red", type = "norm") +
-  labs(color = "Source") # Change the legend title to "Classification"
+  labs(x = paste0("Principal component 1 (", eigen_percent[2], " %)"),
+       y = paste0("Principal component 2 (", eigen_percent[3], " %)")) +
+  scale_color_manual(values = c("#513483", "#b6b638", "#5559bb", "#75b550", "#ac46a3", "#5ac27d", "#c9417e", "#43c29e", "#d54662", "#36dee6", "#c75a30", "#7b81eb", "#cc8c33", "#618ad5", "#bbb55c", "#be82d6", "#407930", "#ca69af", "#777222", "#7f2459", "#d08b57", "#da75a0", "#8b371c", "#b34a5e", "#d5574f", "#ad4448")) +
+  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color = "red", type = "norm") +
+  labs(color = "Source")  # Change the legend title to "Classification"
 
+# Convert the ggplot2 plot to an interactive Plotly plot
 interactive_plotPC <- ggplotly(PC, originalData = FALSE)  # Set originalData to FALSE
 
-PC2 <- ggplot(merged_data, aes(x = PC2, y = PC3, color = Source)) +
+PC2 <- ggplot(merged_data, aes(x = PC1, y = PC3, color = Source)) +
   geom_point() +
-  labs(x = paste0("Principal component 2 (",eigen_percent[3]," %)"),
-       y = paste0("Principal component 3 (",eigen_percent[4]," %)")) +
-  scale_color_manual(values = c("#ce5183",
-"#5ec671",
-"#b858b8",
-"#9ab03e",
-"#5a57bc",
-"#d09538",
-"#6f81e7",
-"#629142",
-"#543382",
-"#45c097",
-"#8a2a66",
-"#a0803a",
-"#628dd4",
-"#bb5338",
-"#ba84d5",
-"#ba4758",
-"#d976b6")) +
-  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color="red", type = "norm") +
-  labs(color = "Source") # Change the legend title to "Classification"
+  labs(x = paste0("Principal component 1 (", eigen_percent[2], " %)"),
+       y = paste0("Principal component 3 (", eigen_percent[4], " %)")) +
+  scale_color_manual(values = c("#513483", "#b6b638", "#5559bb", "#75b550", "#ac46a3", "#5ac27d", "#c9417e", "#43c29e", "#d54662", "#36dee6", "#c75a30", "#7b81eb", "#cc8c33", "#618ad5", "#bbb55c", "#be82d6", "#407930", "#ca69af", "#777222", "#7f2459", "#d08b57", "#da75a0", "#8b371c", "#b34a5e", "#d5574f", "#ad4448")) +
+  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color = "red", type = "norm") +
+  labs(color = "Source")  # Change the legend title to "Classification"
 
 # Convert the ggplot2 plot to an interactive Plotly plot
 interactive_plotPC2 <- ggplotly(PC2, originalData = FALSE)  # Set originalData to FALSE
 
-subplot(style(interactive_plotPC, showlegend = FALSE), interactive_plotPC2, titleY = TRUE, titleX = TRUE, margin = c(0.01, 0.1, 0, 0), nrows=1) %>%  
+# Combine both plots into subplots with annotations
+subplot(style(interactive_plotPC, showlegend = FALSE), interactive_plotPC2, titleY = TRUE, titleX = TRUE, margin = c(0.01, 0.12, 0, 0), nrows = 1) %>%  
   layout(annotations = list( 
-    list(x = 0, y = 1.05, text = "A", showarrow = F, xref='paper', yref='paper'), 
-    list(x = 0.5, y = 1.05, text = "B", showarrow = F, xref='paper', yref='paper')) 
-  ) 
+    list(x = 0, y = 1.05, text = "A", showarrow = FALSE, xref = 'paper', yref = 'paper'), 
+    list(x = 0.5, y = 1.05, text = "B", showarrow = FALSE, xref = 'paper', yref = 'paper')) 
+  )
 
 ```
 
@@ -233,111 +219,122 @@ Keyfile <- read.table("Keyfile_Europe+Scotland_FilteredGenotypes_Proportional_Na
 # Merge the two data frames based on specific columns
 merged_data <- merge(df, Keyfile, by.x = "FID", by.y = "Taxa", row.names = FALSE)
 
+# Convert "Source" column to a factor with specified levels
 merged_data$Source <- factor(merged_data$Source, levels=c("Ireland", "Scotland", "Sheringham Estate", "Felbrigg Estate", "Spain", "Italy", "Austria", "Poland", "Bulgaria", "Sweden", "Finland", "Siberia", "Turkey"))
 
+# Subset data based on specific sources
 NationalTrust_data <- subset(merged_data, Source %in% c("Sheringham Estate", "Felbrigg Estate"))
 
+# Read eigenvalues file and adjust proportions
 eigen_percent <- read.table("Eigenvalues_Europe+Scotland_FilteredGenotypes_Proportional_NationalTrustSamples.txt", row.names = 1, header = TRUE, sep = "\t")
-
 eigen_percent$proportion.of.total <- eigen_percent$proportion.of.total * 100
-
-eigen_percent <- eigen_percent[ ,("proportion.of.total")]
+eigen_percent <- eigen_percent[, "proportion.of.total"]
 
 ```
 
 ### Principal Component Analysis
 
-```{r PC_Europe, fig.cap = "*Figure 3: Genetic Relationships of European Scots Pine Trees. This Principal Component Analysis (PCA) illustrates the genetic relationships among 235 Scots pine trees from across Europe inferred from 5849 SNPs. Each dot on the plot represents an individual tree, coloured by their source population. Autochthonous populations are labelled by their respective country, putative native populations are labelled accordingly. The distance between dots reflects the degree of genetic difference or similarity, whereas closer dots represent closer genetic relationships. The \"Explained Variance\" score quantifies how effectively the PCA simplifies the genetic information. Putative amples highlighted by red ellipse.*"}
+```{r PC_Europe, fig.cap = "*Figure 3: Genetic Relationships of European Scots Pine Trees. Principal Component Analysis plots (PCA) (A) PC1 vs. PC2. (B) PC1 vs. PC3 showing the genetic relationships among 235 Scots pine trees from across Europe inferred from 5849 SNPs. Each dot on the plot represents an individual tree, coloured by their source population. Autochthonous populations are labelled by their respective country, putative native populations are labelled accordingly. The distance between dots reflects the degree of genetic difference or similarity, whereas closer dots represent closer genetic relationships. The \"Explained Variance\" score quantifies how effectively the PCA simplifies the genetic information. Putative native samples highlighted by red ellipse.*"}
 # Create a ggplot2 plot
-
 PC <- ggplot(merged_data, aes(x = PC1, y = PC2, color = Source)) +
   geom_point() +
-  labs(x = paste0("Principal component 1 (",eigen_percent[2]," %)"),
-       y = paste0("Principal component 2 (",eigen_percent[3]," %)")) +
-  scale_color_manual(values = c("#bb486a",
-"#c288d3",
-"#8fb745",
-"#6d71d8",
-"#c49c38",
-"#563686",
-"#4cc490",
-"#be62c1",
-"#709243",
-"#b14a89",
-"#bf6f39",
-"#5e8bd5",
-"#b64741",
-"#bb486a")) +
-  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color="red", type = "norm") +
-  labs(color = "Source") # Change the legend title to "Classification"
+  labs(x = paste0("Principal component 1 (", eigen_percent[2], " %)"),
+       y = paste0("Principal component 2 (", eigen_percent[3], " %)")) +
+  scale_color_manual(values = c("#bb486a", "#c288d3", "#8fb745", "#6d71d8", "#c49c38", "#563686", "#4cc490", "#be62c1", "#709243", "#b14a89", "#bf6f39", "#5e8bd5", "#b64741", "#bb486a")) +
+  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color = "red", type = "norm") +
+  labs(color = "Source")  # Change the legend title to "Classification"
 
 # Convert the ggplot2 plot to an interactive Plotly plot
 interactive_plotPC <- ggplotly(PC, originalData = FALSE)  # Set originalData to FALSE
 
-# Display the interactive plot
-interactive_plotPC
-
-PC2 <- ggplot(merged_data, aes(x = PC2, y = PC3, color = Source)) +
+PC2 <- ggplot(merged_data, aes(x = PC1, y = PC3, color = Source)) +
   geom_point() +
-  labs(x = paste0("Principal component 1 (",eigen_percent[2]," %)"),
-       y = paste0("Principal component 2 (",eigen_percent[3]," %)")) +
-  scale_color_manual(values = c("#bb486a",
-"#c288d3",
-"#8fb745",
-"#6d71d8",
-"#c49c38",
-"#563686",
-"#4cc490",
-"#be62c1",
-"#709243",
-"#b14a89",
-"#bf6f39",
-"#5e8bd5",
-"#b64741",
-"#bb486a")) +
-  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color="red", type = "norm") +
-  labs(color = "Source") # Change the legend title to "Classification"
+  labs(x = paste0("Principal component 1 (", eigen_percent[2], " %)"),
+       y = paste0("Principal component 3 (", eigen_percent[4], " %)")) +
+  scale_color_manual(values = c("#bb486a", "#c288d3", "#8fb745", "#6d71d8", "#c49c38", "#563686", "#4cc490", "#be62c1", "#709243", "#b14a89", "#bf6f39", "#5e8bd5", "#b64741", "#bb486a")) +
+  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color = "red", type = "norm") +
+  labs(color = "Source")  # Change the legend title to "Classification"
 
 # Convert the ggplot2 plot to an interactive Plotly plot
 interactive_plotPC2 <- ggplotly(PC2, originalData = FALSE)  # Set originalData to FALSE
 
-# Display the interactive plot
-interactive_plotPC2
+# Combine both plots into subplots with annotations
+subplot(style(interactive_plotPC, showlegend = FALSE), interactive_plotPC2, titleY = TRUE, titleX = TRUE, margin = c(0.01, 0.12, 0, 0), nrows = 1) %>%  
+  layout(annotations = list( 
+    list(x = 0, y = 1.05, text = "A", showarrow = FALSE, xref = 'paper', yref = 'paper'), 
+    list(x = 0.5, y = 1.05, text = "B", showarrow = FALSE, xref = 'paper', yref = 'paper')) 
+  )
 
-library("cowplot")
-plot_grid(PC, PC2, 
-          labels = c("A", "B"),
-          ncol = 2, nrow = 1)
+```
 
+#### With Spain and Italy removed
+Spain and Italy appear to be particularly distinct to the rest of Europe and so were removed to allow better visualisation of the UK samples.
 
-prow <- plot_grid(
-  PC + theme(legend.position="none"),
-  PC2 + theme(legend.position="none"),
-  align = 'vh',
-  labels = c("A", "B"),
-  hjust = -1,
-  nrow = 1
-)
-prow
+```{r Data_Europe_NoItalySpain}
+# Read in TASSEL 5 PCA values in Plink format from a text file into a data frame
+df <- read.table("PC_Europe+Scotland_FilteredGenotypes_Proportional_NationalTrustSamples_NoItalySpain.txt", header = TRUE, sep = "\t")
 
-# extract the legend from one of the plots
-legend <- get_legend(
-  # create some space to the left of the legend
-  PC + theme(legend.box.margin = margin(0, 0, 0, 12))
-)
+# Read a Keyfile containing Taxa names and corresponding information of interest into a data frame
+Keyfile <- read.table("Keyfile_Europe+Scotland_FilteredGenotypes_Proportional_NationalTrustSamples.txt", header = TRUE, sep = "\t")
 
-# add the legend to the row we made earlier. Give it one-third of 
-# the width of one plot (via rel_widths).
-PCgrid <- plot_grid(prow, legend, rel_widths = c(3, 0.8))
+# Merge the two data frames based on specific columns
+merged_data <- merge(df, Keyfile, by.x = "FID", by.y = "Taxa", row.names = FALSE)
+
+# Convert "Source" column to a factor with specified levels
+merged_data$Source <- factor(merged_data$Source, levels=c("Ireland", "Scotland", "Sheringham Estate", "Felbrigg Estate", "Austria", "Poland", "Bulgaria", "Sweden", "Finland", "Siberia", "Turkey"))
+
+# Subset data based on specific sources
+NationalTrust_data <- subset(merged_data, Source %in% c("Sheringham Estate", "Felbrigg Estate"))
+
+# Read eigenvalues file and adjust proportions
+eigen_percent <- read.table("Eigenvalues_Europe+Scotland_FilteredGenotypes_Proportional_NationalTrustSamples_NoItalySpain.txt", row.names = 1, header = TRUE, sep = "\t")
+eigen_percent$proportion.of.total <- eigen_percent$proportion.of.total * 100
+eigen_percent <- eigen_percent[, "proportion.of.total"]
+
+```
+
+### Principal Component Analysis
+
+```{r PC_Europe_NoItalySpain, fig.cap = "*Figure 4: Genetic Relationships of European Scots Pine Trees. Principal Component Analysis plots (PCA) (A) PC1 vs. PC2. (B) PC1 vs. PC3 showing the genetic relationships among 235 Scots pine trees from across Europe inferred from 5849 SNPs. Each dot on the plot represents an individual tree, coloured by their source population. Autochthonous populations are labelled by their respective country, putative native populations are labelled accordingly. The distance between dots reflects the degree of genetic difference or similarity, whereas closer dots represent closer genetic relationships. The \"Explained Variance\" score quantifies how effectively the PCA simplifies the genetic information. Putative native samples highlighted by red ellipse.*"}
+# Create a ggplot2 plot
+PC <- ggplot(merged_data, aes(x = PC1, y = PC2, color = Source)) +
+  geom_point() +
+  labs(x = paste0("Principal component 1 (", eigen_percent[2], " %)"),
+       y = paste0("Principal component 2 (", eigen_percent[3], " %)")) +
+  scale_color_manual(values = c("#bb486a", "#c288d3", "#8fb745", "#6d71d8", "#c49c38", "#563686", "#4cc490", "#be62c1", "#709243", "#b14a89", "#bf6f39", "#5e8bd5", "#b64741", "#bb486a")) +
+  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color = "red", type = "norm") +
+  labs(color = "Source")  # Change the legend title to "Classification"
+
+# Convert the ggplot2 plot to an interactive Plotly plot
+interactive_plotPC <- ggplotly(PC, originalData = FALSE)  # Set originalData to FALSE
+
+PC2 <- ggplot(merged_data, aes(x = PC1, y = PC3, color = Source)) +
+  geom_point() +
+  labs(x = paste0("Principal component 1 (", eigen_percent[2], " %)"),
+       y = paste0("Principal component 3 (", eigen_percent[4], " %)")) +
+  scale_color_manual(values = c("#bb486a", "#c288d3", "#8fb745", "#6d71d8", "#c49c38", "#563686", "#4cc490", "#be62c1", "#709243", "#b14a89", "#bf6f39", "#5e8bd5", "#b64741", "#bb486a")) +
+  stat_ellipse(data = NationalTrust_data, aes(group = NULL), color = "red", type = "norm") +
+  labs(color = "Source")  # Change the legend title to "Classification"
+
+# Convert the ggplot2 plot to an interactive Plotly plot
+interactive_plotPC2 <- ggplotly(PC2, originalData = FALSE)  # Set originalData to FALSE
+
+# Combine both plots into subplots with annotations
+subplot(style(interactive_plotPC, showlegend = FALSE), interactive_plotPC2, titleY = TRUE, titleX = TRUE, margin = c(0.01, 0.12, 0, 0), nrows = 1) %>%  
+  layout(annotations = list( 
+    list(x = 0, y = 1.05, text = "A", showarrow = FALSE, xref = 'paper', yref = 'paper'), 
+    list(x = 0.5, y = 1.05, text = "B", showarrow = FALSE, xref = 'paper', yref = 'paper')) 
+  )
 
 ```
 
 ### Admixture Analysis
 
-ADMIXTURE is a computational method that analyzes genetic data to uncover population substructure and individual ancestry by estimating the proportions of ancestry from different source populations. The optimal number of ancestral populations is infered by the cross-entropy plot.
+ADMIXTURE is a computational method that analyses genetic data to uncover population substructure and individual ancestry by estimating ancestry proportions from different source populations. The optimal number of ancestral populations is inferred by the cross-entropy plot.
 
-```{r Admixture, fig.cap = c("*Figure 4; Cross-entropy plot for the number of cluster K = 1-12. The retained value of K is K = 6.*", "*Figure 5: Admixture Analysis of European Scots Pine Populations (K = 6). This admixture graph displays the genetic composition of 235 European Scots Pine trees (Pinus sylvestris) using a model with K = 6 ancestral components, inferred from 5849 SNPs. Each vertical bar represents an individual tree or a group of trees, and the colours within the bars represent the proportion of ancestry assigned to each of the six genetic clusters.*")}
+```{r Admixture, fig.cap = c("*Figure 5; Cross-entropy values from K=1 to K=12 for admixture analysis. The retained value of K is K = 6.*", "*Figure 6: Admixture Analysis of European Scots Pine Populations (K = 6). This admixture graph displays the genetic composition of 235 European Scots Pine trees (Pinus sylvestris) using a model with K = 6 ancestral components, inferred from 5849 SNPs. Each vertical bar represents an individual tree or a group of trees, and the colours within the bars represent the proportion of ancestry assigned to each of the six genetic clusters.*")}
 
+# Load SNMF project
 project <- load.snmfProject("Europe+Scotland_FilteredGenotypes_Proportional_NationalTrustSamples.snmfProject")
 
 # Plot the cross-entropy criterion for all runs in the SNMF project
@@ -363,12 +360,7 @@ tbl <- cbind(Populations_data, qmatrix)
 tbl <- tbl[order(match(tbl$taxa, desired_order)), ]
 
 # Define colors for the barplot
-col = c("#50ac72",
-        "#c45ca2",
-        "#929d3d",
-        "#7879cd",
-        "#c8803e",
-        "#cc5452")
+col = c("#50ac72", "#c45ca2", "#929d3d", "#7879cd", "#c8803e", "#cc5452")
 
 # Find breakpoints between different populations
 breaks <- 0
@@ -389,9 +381,8 @@ labels[breaks[1:(length(breaks) - 1)] + ((breaks[2:length(breaks)] - breaks[1:(l
 par(oma = c(4.5, 1, 1, 1), mar = c(3, 3, 2, 1), mgp = c(2, 1, 0), xpd = TRUE)
 
 # Create the barplot
-barplot(t(as.matrix(tbl[, 3:8])), col = col, xaxt = "n", border = NA, xlim = c(0, nrow(tbl)), width = 1, space = spaces, names.arg = rep("", nrow(tbl)), ylab="Ancestry proportions", main=paste("K = ",opt.K,sep=""), cex.lab = 1)
+barplot(t(as.matrix(tbl[, 3:8])), col = col, xaxt = "n", border = NA, xlim = c(0, nrow(tbl)), width = 1, space = spaces, names.arg = rep("", nrow(tbl)), ylab="Ancestry proportions", main=paste("K = ", opt.K, sep=""), cex.lab = 1)
 
 # Add x-axis labels with line breaks
 axis(1, line = -0.2, at = breaks[1:(length(breaks) - 1)] + ((0:(length(breaks) - 2)) * 2) + ((breaks[2:length(breaks)] - breaks[1:(length(breaks) - 1)]) / 2), lwd = 0, lwd.ticks = 1, labels = gsub("_", " ", tbl$pop[breaks]), las = 2, cex.axis = 0.8)
-
 ```
