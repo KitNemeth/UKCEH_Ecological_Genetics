@@ -1,0 +1,62 @@
+# Snakemake workflow for Petrobium genome assembly
+"""
+Author: Kit Nemeth & Susheel Bhanu BUSI
+Affiliation: UKCEH
+Date: [2025-06-04]
+Run: snakemake -s Snakefile.smk --use-conda --cores 4 -rp
+Latest modification:
+Purpose: Adding in steps for genome assembly using Petrobium long-read (nanopore) data.
+"""
+
+########
+# MODULES
+import os, re
+import sys
+import glob
+import pandas as pd
+
+########
+# PATHS
+FASTQ_DIR = "Nanopore_data"
+DBS_DIR = "Databases"   # BUSCO databases
+ENV_DIR = "Conda enviorments"  # Conda environments directory
+RESULTS_DIR = "Results"     # Results directory
+SRC_DIR = "Scripts"  # Scripts directory
+
+########
+# INPUT
+SAMPLES = ["petrobium"]  # List of sample names
+
+
+########
+# RULES
+rule concatenate:
+    input:
+        fastq=FASTQ_DIR
+    output:
+        concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fq")
+    message:
+        "Concatenating all fastq files"
+    shell:
+        "cd {input.fastq} && cat {input.fastq}/*.fastq > {output.concatenated_fq}"
+
+rule quality_filtering:
+    input:
+        rules.concatenate.output.concatenated_fq
+    output:
+        filtered_fq=os.path.join(RESULTS_DIR, "preprocessed/{sample}_filtered.fq")
+    message:
+        "Filtering raw reads based on Quality score 10"
+    conda:
+        os.path.join(ENV_DIR, "nanofilt.yaml")
+    params:
+        quality=10, 
+        length=500
+    shell:
+        "NanoFilt -q {params.quality} -l {params.length} {input} > {output.filtered_fq}"
+
+rule assembly:
+
+rule polish:
+
+rule quality_assessment:
