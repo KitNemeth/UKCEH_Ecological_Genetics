@@ -37,11 +37,11 @@ rule concatenate:
     input:
         fastq=FASTQ_DIR
     output:
-        concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fq")
+        concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fastq.gz")
     message:
         "Concatenating all fastq files"
     shell:
-        "cd {input.fastq} && cat {input.fastq}/*.fastq > {output.concatenated_fq}"
+        "cd {input.fastq} && cat {input.fastq}/*.fastq.gz > {output.concatenated_fq}"
 
 rule quality_filtering:
     input:
