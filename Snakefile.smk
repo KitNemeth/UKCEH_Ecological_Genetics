@@ -58,8 +58,47 @@ rule quality_filtering:
     shell:
         "NanoFilt -q {params.quality} -l {params.length} {input} > {output.filtered_fq}"
 
-#rule assembly:
+rule assembler_flye:
+    input:
+        rules.quality_filtering.output.filtered_fq
+    output:
+        assembly=os.path.join(RESULTS_DIR, "assembly/flye/{sample}_assembly.fasta")
+    message:
+        "Assembling genome using Flye"
+    conda:
+        os.path.join(ENV_DIR, "flye.yaml")
+    threads:
+        48
+    #shell:
+        "flye --nano-raw {input} --out-dir $dirname({output.assembly}) --threads {threads}"
 
-#rule polish:
-
-#rule quality_assessment:
+rule polish_medaka:
+    input:
+       asm=rules.assembler_flye.output.assembly,
+       filt=rules.quality_filtering.output.filtered_fq
+    output:
+        polished_assembly=os.path.join(RESULTS_DIR, "polished/{sample}_polished.fasta")
+    message:
+        "Polishing assembly using Medaka"
+    conda:
+        os.path.join(ENV_DIR, "medaka.yaml")
+    threads:
+        48
+    shell:
+        "medaka_consensus -i {input.filt} -d {input.asm} -o $dirname({output.polished_assembly}) -t {threads}"
+    
+rule quality_assessment:
+    input:
+        polished_assembly=rules.polish_medaka.output.polished_assembly
+    output:
+        quality_ass=os.path.join(RESULTS_DIR, "quality/{sample}_quality_ass.txt")
+    message:
+        "Assessing quality of the polished assembly"
+    conda:
+        os.path.join(ENV_DIR, "busco.yaml")
+    threads:
+        48
+    params:
+        mode="genome"
+    shell:
+        "busco -i {input.polished_assembly} -m {param.mode} -c {threads} -o $dirname({output.quality_ass})"
