@@ -17,11 +17,11 @@ import pandas as pd
 
 ########
 # PATHS
-FASTQ_DIR = "Nanopore_data"
-DBS_DIR = "Databases"   # BUSCO databases
-ENV_DIR = "Conda enviorments"  # Conda environments directory
-RESULTS_DIR = "Results"     # Results directory
-SRC_DIR = "Scripts"  # Scripts directory
+FASTQ_DIR = "/hdd0/susbus/petrobium"
+DBS_DIR = "/hdd0/susbus/databases"   # BUSCO databases
+ENV_DIR = "/home/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
+RESULTS_DIR = "/home/krinem/mount/cifs_07994_CWI-MIX-RSPB/Petrobium_results"     # Results directory
+SRC_DIR = "/home/krinem/UKCEH_Ecological_Genetics/Scripts"  # Scripts directory
 
 ########
 # INPUT
@@ -60,3 +60,7 @@ rule assembly:
 rule polish:
 
 rule quality_assessment:
+
+rule all:
+    input:
+        expand(os.path.join(RESULTS_DIR, "preprocessed/{sample}_filtered.fq"),sample=SAMPLES)
