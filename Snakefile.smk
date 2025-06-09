@@ -20,7 +20,7 @@ import pandas as pd
 FASTQ_DIR = "/hdd0/susbus/petrobium"
 DBS_DIR = "/hdd0/susbus/databases"   # BUSCO databases
 ENV_DIR = "/home/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
-RESULTS_DIR = "/home/krinem/mount/cifs_07994_CWI-MIX-RSPB/Petrobium_results"     # Results directory
+RESULTS_DIR = "/ssd0/krinem/petrobium_results"     # Results directory
 SRC_DIR = "/home/krinem/UKCEH_Ecological_Genetics/Scripts"  # Scripts directory
 
 ########
