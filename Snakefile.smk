@@ -27,6 +27,9 @@ SRC_DIR = "/home/krinem/UKCEH_Ecological_Genetics/Scripts"  # Scripts directory
 # INPUT
 SAMPLES = ["petrobium"]  # List of sample names
 
+rule all:
+    input:
+        expand(os.path.join(RESULTS_DIR, "preprocessed/{sample}_filtered.fq"),sample=SAMPLES)
 
 ########
 # RULES
@@ -60,7 +63,3 @@ rule quality_filtering:
 #rule polish:
 
 #rule quality_assessment:
-
-rule all:
-    input:
-        expand(os.path.join(RESULTS_DIR, "preprocessed/{sample}_filtered.fq"),sample=SAMPLES)
