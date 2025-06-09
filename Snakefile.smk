@@ -55,11 +55,11 @@ rule quality_filtering:
     shell:
         "NanoFilt -q {params.quality} -l {params.length} {input} > {output.filtered_fq}"
 
-rule assembly:
+#rule assembly:
 
-rule polish:
+#rule polish:
 
-rule quality_assessment:
+#rule quality_assessment:
 
 rule all:
     input:
