@@ -52,7 +52,8 @@ rule quality_filtering:
     message:
         "Filtering raw reads based on Quality score 10"
     conda:
-        os.path.join(ENV_DIR, "nanofilt.yaml")
+        #os.path.join(ENV_DIR, "nanofilt.yaml")
+        "/ssd0/krinem/miniforge3/envs/nanofilt_env"
     params:
         quality=10, 
         length=500
