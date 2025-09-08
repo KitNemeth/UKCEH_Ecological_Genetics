@@ -3,5 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.8
-  - nanofilt
+  - python=3.11
+  - pip
+  - pip:
+      - NanoFilt==2.8.0
