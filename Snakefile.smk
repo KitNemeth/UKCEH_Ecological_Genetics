@@ -63,15 +63,16 @@ rule assembler_flye:
     input:
         rules.quality_filtering.output.filtered_fq
     output:
-        assembly=os.path.join(RESULTS_DIR, "assembly/flye/{sample}_assembly.fasta")
+        assembly=os.path.join(RESULTS_DIR, "assembly/flye/{sample}_assembly/assembly.fasta")
     message:
         "Assembling genome using Flye"
     conda:
         os.path.join(ENV_DIR, "flye.yaml")
     threads:
         48
-    shell:
-        "flye --nano-raw {input} --out-dir $dirname({output.assembly}) --threads {threads}"
+    run:
+        assembly_dir = os.path.dirname(output.assembly)
+        shell("flye --nano-raw {input} --out-dir {assembly_dir} --threads {threads}")
 
 rule polish_medaka:
     input:
