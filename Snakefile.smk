@@ -71,7 +71,12 @@ rule assembler_flye:
     threads:
         48
     shell:
-        "flye --nano-raw {input} --out-dir $(dirname {output.assembly}) --threads {threads}"
+        """
+        outdir={output.assembly}.dir
+        mkdir -p $outdir
+        flye --nano-raw {input} --out-dir $outdir --threads {threads}
+        mv $outdir/assembly.fasta {output.assembly}
+        """
 
 rule polish_medaka:
     input:
