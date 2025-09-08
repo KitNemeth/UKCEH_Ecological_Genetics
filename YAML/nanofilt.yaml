@@ -1,5 +1,6 @@
 channels:
- - conda-forge
- - bioconda
+  - bioconda
+  - conda-forge
 dependencies:
- - nanofilt=2.8.0
+  - python=3.11
+  - nanofilt
