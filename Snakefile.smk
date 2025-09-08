@@ -29,7 +29,8 @@ SAMPLES = ["petrobium"]  # List of sample names
 
 rule all:
     input:
-        expand(os.path.join(RESULTS_DIR, "preprocessed/{sample}_filtered.fq"),sample=SAMPLES)
+        expand(os.path.join(RESULTS_DIR, "preprocessed/{sample}_filtered.fq"), sample=SAMPLES),
+        expand(os.path.join(RESULTS_DIR, "assembly/flye/{sample}_assembly.fasta"), sample=SAMPLES)
 
 ########
 # RULES
