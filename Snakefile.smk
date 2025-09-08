@@ -70,7 +70,7 @@ rule assembler_flye:
         os.path.join(ENV_DIR, "flye.yaml")
     threads:
         48
-    #shell:
+    shell:
         "flye --nano-raw {input} --out-dir $dirname({output.assembly}) --threads {threads}"
 
 rule polish_medaka:
