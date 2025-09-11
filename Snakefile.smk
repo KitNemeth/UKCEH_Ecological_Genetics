@@ -52,13 +52,16 @@ rule quality_filtering:
     message:
         "Filtering raw reads based on Quality score 10"
     conda:
-        #os.path.join(ENV_DIR, "nanofilt.yaml")
+        # Either use the yaml, or the full env path if managing manually
+        # os.path.join(ENV_DIR, "nanofilt.yaml")
         "/ssd0/krinem/miniforge3/envs/nanofilt_env"
     params:
         quality=10, 
         length=500
     shell:
-        "NanoFilt -q {params.quality} -l {params.length} {input} > {output.filtered_fq}"
+        """
+        gunzip -c {input} | NanoFilt -q {params.quality} -l {params.length} > {output.filtered_fq}
+        """
 
 rule assembler_flye:
     input:
