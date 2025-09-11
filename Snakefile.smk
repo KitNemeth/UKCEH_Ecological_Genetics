@@ -60,7 +60,8 @@ rule quality_filtering:
         length=500
     shell:
         """
-        gunzip -c {input} | NanoFilt -q {params.quality} -l {params.length} > {output.filtered_fq}
+        mkdir -p $(dirname {output.filtered_fq}) $(dirname {log})
+        gunzip -c {input} | NanoFilt -q {params.quality} -l {params.length} > {output.filtered_fq} 2> {log}
         """
 
 rule assembler_flye:
