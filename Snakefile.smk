@@ -1,31 +1,33 @@
-# Snakemake workflow for Petrobium genome assembly
+# Snakemake workflow for genome assembly (species-agnostic)
 """
 Author: Kit Nemeth & Susheel Bhanu BUSI
 Affiliation: UKCEH
 Date: [2025-06-04]
-Run: snakemake -s Snakefile.smk --use-conda --cores 4 -rp
+Run example:
+    snakemake -s Snakefile.smk --use-conda --cores 48 -rp --config species=juniperus
 Latest modification:
-Purpose: Adding in steps for genome assembly using Petrobium long-read (nanopore) data.
+Purpose: Genome assembly using long-read (Nanopore) data, with species name set at runtime.
 """
 
 ########
 # MODULES
-import os, re
-import sys
-import glob
-import pandas as pd
+import os
+
+########
+# CONFIG
+species = config.get("species", "petrobium")   # default to petrobium if not provided
 
 ########
 # PATHS
-FASTQ_DIR = "/hdd0/susbus/petrobium"
-DBS_DIR = "/hdd0/susbus/databases"   # BUSCO databases
-ENV_DIR = "/home/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
-RESULTS_DIR = "/ssd0/krinem/petrobium_results"     # Results directory
-SRC_DIR = "/home/krinem/UKCEH_Ecological_Genetics/Scripts"  # Scripts directory
+FASTQ_DIR   = f"/hdd0/susbus/{species}"
+DBS_DIR     = "/hdd0/susbus/databases"   # BUSCO databases
+ENV_DIR     = "/home/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
+RESULTS_DIR = f"/ssd0/krinem/{species}_results"     # Results directory
+SRC_DIR     = "/home/krinem/UKCEH_Ecological_Genetics/Scripts"  # Scripts directory
 
 ########
 # INPUT
-SAMPLES = ["petrobium"]  # List of sample names
+SAMPLES = [species]
 
 rule all:
     input:
@@ -52,16 +54,14 @@ rule quality_filtering:
     message:
         "Filtering raw reads based on Quality score 10"
     conda:
-        # Either use the yaml, or the full env path if managing manually
-        # os.path.join(ENV_DIR, "nanofilt.yaml")
         "/ssd0/krinem/miniforge3/envs/nanofilt_env"
     params:
         quality=10, 
         length=500
     shell:
         """
-        mkdir -p $(dirname {output.filtered_fq}) $(dirname {log})
-        gunzip -c {input} | NanoFilt -q {params.quality} -l {params.length} > {output.filtered_fq} 2> {log}
+        mkdir -p $(dirname {output.filtered_fq})
+        gunzip -c {input} | NanoFilt -q {params.quality} -l {params.length} > {output.filtered_fq}
         """
 
 rule assembler_flye:
@@ -112,4 +112,4 @@ rule quality_assessment:
     params:
         mode="genome"
     shell:
-        "busco -i {input.polished_assembly} -m {param.mode} -c {threads} -o $dirname({output.quality_ass})"
+        "busco -i {input.polished_assembly} -m {params.mode} -c {threads} -o $dirname({output.quality_ass})"
