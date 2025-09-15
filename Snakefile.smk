@@ -45,7 +45,8 @@ rule concatenate:
         fastq=glob.glob(os.path.join(FASTQ_DIR, "*.fastq.gz"))
     output:
         concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fastq.gz"),
-        log=os.path.join(RESULTS_DIR, "logs/{sample}_concatenate.log")
+    log:
+        os.path.join(RESULTS_DIR, "logs/{sample}_concatenate.log")
     message:
         "Concatenating all fastq files"
     shell:
