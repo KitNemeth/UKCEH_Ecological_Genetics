@@ -38,19 +38,18 @@ rule all:
 
 ########
 # RULES
+import glob
+
 rule concatenate:
     input:
-        fastq=FASTQ_DIR
+        fastq=glob.glob(os.path.join(FASTQ_DIR, "*.fastq.gz"))
     output:
-        concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fastq.gz")
-    log:
-        os.path.join(RESULTS_DIR, "logs/{sample}_concatenate.log")
-    message:
-        "Concatenating all fastq files"
+        concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fastq.gz"),
+        log=os.path.join(RESULTS_DIR, "logs/{sample}_concatenate.log")
     shell:
         """
         mkdir -p $(dirname {output.concatenated_fq}) $(dirname {log})
-        cd {input.fastq} && cat *.fastq.gz > {output.concatenated_fq} 2> {log}
+        cat {input.fastq} > "{output.concatenated_fq}" 2> "{log}"
         """
 
 rule quality_filtering:
