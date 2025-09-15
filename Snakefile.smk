@@ -42,7 +42,7 @@ import glob, os
 
 rule concatenate:
     input:
-        fastq=glob.glob(os.path.join(FASTQ_DIR, "*.fastq.gz"))
+        fastq=lambda wildcards: glob.glob(os.path.join(FASTQ_DIR, "*.fastq.gz"))
     output:
         concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fastq.gz"),
     log:
