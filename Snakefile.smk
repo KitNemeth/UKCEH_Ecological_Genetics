@@ -143,6 +143,17 @@ rule quality_assessment:
         mode="genome"
     shell:
         """
-        mkdir -p $(dirname {output.quality_ass}) $(dirname {log})
-        busco -i {input.polished_assembly} -m {params.mode} -c {threads} -o $dirname({output.quality_ass}) > {log} 2>&1
+        outdir=$(dirname {output.quality_ass})/{wildcards.sample}_busco_out
+
+        mkdir -p $outdir $(dirname {log})
+
+        busco \
+            -i {input.polished_assembly} \
+            -m {params.mode} \
+            -c {threads} \
+            -o {wildcards.sample}_busco \
+            --out_path $outdir \
+            > {log} 2>&1
+
+        cp $outdir/{wildcards.sample}_busco/short_summary*.txt {output.quality_ass}
         """
