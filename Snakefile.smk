@@ -98,8 +98,8 @@ rule assembler_flye:
 
 rule polish_medaka:
     input:
-       asm=rules.assembler_flye.output.assembly,
-       filt=rules.quality_filtering.output.filtered_fq
+        asm=rules.assembler_flye.output.assembly,
+        filt=rules.quality_filtering.output.filtered_fq
     output:
         polished_assembly=os.path.join(RESULTS_DIR, "polished/{sample}_polished.fasta")
     log:
@@ -112,8 +112,18 @@ rule polish_medaka:
         48
     shell:
         """
-        mkdir -p $(dirname {output.polished_assembly}) $(dirname {log})
-        medaka_consensus -i {input.filt} -d {input.asm} -o $dirname({output.polished_assembly}) -t {threads} > {log} 2>&1
+        outdir=$(dirname {output.polished_assembly})/{wildcards.sample}_medaka_out
+
+        mkdir -p $outdir $(dirname {log})
+
+        medaka_consensus \
+            -i {input.filt} \
+            -d {input.asm} \
+            -o $outdir \
+            -t {threads} \
+            > {log} 2>&1
+
+        cp $outdir/consensus.fasta {output.polished_assembly}
         """
 
 rule quality_assessment:
