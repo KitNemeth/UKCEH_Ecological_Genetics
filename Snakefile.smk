@@ -1,4 +1,3 @@
-# Snakemake workflow for genome assembly (species-agnostic, with logs)
 """
 Author: Kit Nemeth & Susheel Bhanu BUSI
 Affiliation: UKCEH
@@ -44,7 +43,7 @@ rule concatenate:
     input:
         fastq=lambda wildcards: glob.glob(os.path.join(FASTQ_DIR, "*.fastq.gz"))
     output:
-        concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fastq.gz")
+        concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fastq.gz"),
     log:
         os.path.join(RESULTS_DIR, "logs/{sample}_concatenate.log")
     message:
@@ -67,7 +66,7 @@ rule quality_filtering:
     conda:
         "/ssd0/krinem/miniforge3/envs/nanofilt_env"
     params:
-        quality=10,
+        quality=10, 
         length=500
     shell:
         """
@@ -86,7 +85,8 @@ rule assembler_flye:
         "Assembling genome using Flye"
     conda:
         os.path.join(ENV_DIR, "flye.yaml")
-    threads: 48
+    threads:
+        48
     shell:
         """
         outdir={output.assembly}.dir
@@ -107,7 +107,8 @@ rule polish_medaka:
         "Polishing assembly using Medaka"
     conda:
         os.path.join(ENV_DIR, "medaka.yaml")
-    threads: 48
+    threads:
+        48
     shell:
         """
         outdir=$(dirname {output.polished_assembly})/{wildcards.sample}_medaka_out
@@ -135,7 +136,8 @@ rule quality_assessment:
         "Assessing quality of the polished assembly"
     conda:
         os.path.join(ENV_DIR, "busco.yaml")
-    threads: 48
+    threads:
+        48
     params:
         mode="genome"
     shell:
