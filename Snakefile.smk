@@ -68,7 +68,7 @@ rule quality_filtering:
         "/ssd0/krinem/miniforge3/envs/nanofilt_env"
     params:
         quality=10, 
-        length=500
+        length=500,
     shell:
         """
         mkdir -p $(dirname {output.filtered_fq}) $(dirname {log})
