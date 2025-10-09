@@ -44,7 +44,7 @@ rule concatenate:
     input:
         fastq=lambda wildcards: glob.glob(os.path.join(FASTQ_DIR, "*.fastq.gz"))
     output:
-        concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fastq.gz"),
+        concatenated_fq=os.path.join(RESULTS_DIR, "concatenated/{sample}_concatenated.fastq.gz")
     log:
         os.path.join(RESULTS_DIR, "logs/{sample}_concatenate.log")
     message:
@@ -67,8 +67,8 @@ rule quality_filtering:
     conda:
         "/ssd0/krinem/miniforge3/envs/nanofilt_env"
     params:
-        quality=10, 
-        length=500,
+        quality=10 
+        length=500
     shell:
         """
         mkdir -p $(dirname {output.filtered_fq}) $(dirname {log})
