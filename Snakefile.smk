@@ -82,11 +82,9 @@ rule quality_filtering:
 
 rule assembler_flye:
     input:
-        rules.quality_filtering.output.filtered_fq
+        filtered_fq=rules.quality_filtering.output.filtered_fq
     output:
         assembly=os.path.join(RESULTS_DIR, "assembly/flye/{sample}_assembly.fasta")
-    log:
-        os.path.join(RESULTS_DIR, "logs/{sample}_flye.log")
     message:
         "Assembling genome using Flye"
     conda:
