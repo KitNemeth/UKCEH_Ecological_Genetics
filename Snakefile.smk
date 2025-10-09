@@ -67,7 +67,7 @@ rule quality_filtering:
     conda:
         "/ssd0/krinem/miniforge3/envs/nanofilt_env"
     params:
-        quality=10, 
+        quality=10
         length=500
     shell:
         """
