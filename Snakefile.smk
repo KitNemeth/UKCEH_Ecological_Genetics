@@ -67,7 +67,7 @@ rule quality_filtering:
     conda:
         "/ssd0/krinem/miniforge3/envs/nanofilt_env"
     params:
-        quality=10 
+        quality=10, 
         length=500
     shell:
         """
@@ -86,8 +86,7 @@ rule assembler_flye:
         "Assembling genome using Flye"
     conda:
         os.path.join(ENV_DIR, "flye.yaml")
-    threads:
-        48
+    threads: 48
     shell:
         """
         outdir={output.assembly}.dir
@@ -108,8 +107,7 @@ rule polish_medaka:
         "Polishing assembly using Medaka"
     conda:
         os.path.join(ENV_DIR, "medaka.yaml")
-    threads:
-        48
+    threads: 48
     shell:
         """
         outdir=$(dirname {output.polished_assembly})/{wildcards.sample}_medaka_out
@@ -137,8 +135,7 @@ rule quality_assessment:
         "Assessing quality of the polished assembly"
     conda:
         os.path.join(ENV_DIR, "busco.yaml")
-    threads:
-        48
+    threads: 48
     params:
         mode="genome"
     shell:
