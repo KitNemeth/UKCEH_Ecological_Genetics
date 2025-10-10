@@ -27,7 +27,7 @@ FASTQ_DIR   = f"/ssd0/krinem/Sequence_data/{species}"
 DBS_DIR     = "/hdd0/susbus/databases"   # BUSCO databases
 ENV_DIR     = "/ssd0/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
 RESULTS_DIR = f"/ssd0/krinem/{species}_results"     # Results directory
-SRC_DIR     = "/ssd0/krinem/UKCEH_Ecological_Genetics/Scripts"  # Scripts directory
+#SRC_DIR     = "/ssd0/krinem/UKCEH_Ecological_Genetics/Scripts"  # Scripts directory
 
 ########
 # INPUT
@@ -36,8 +36,8 @@ SAMPLES = [species]
 rule all:
     input:
         expand(os.path.join(RESULTS_DIR, "preprocessed/{sample}_filtered.fq"), sample=SAMPLES),
-        expand(os.path.join(RESULTS_DIR, "assembly/flye/{sample}_assembly.fasta"), sample=SAMPLES),
-        expand(os.path.join(RESULTS_DIR, "polished/{sample}_polished.fasta"), sample=SAMPLES),
+        #expand(os.path.join(RESULTS_DIR, "assembly/flye/{sample}_assembly.fasta"), sample=SAMPLES),
+        #expand(os.path.join(RESULTS_DIR, "polished/{sample}_polished.fasta"), sample=SAMPLES),
         expand(os.path.join(RESULTS_DIR, "quality/{sample}_quality_ass.txt"), sample=SAMPLES)
 
 
