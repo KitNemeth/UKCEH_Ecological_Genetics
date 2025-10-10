@@ -25,9 +25,9 @@ species = config.get("species", "petrobium")   # default to petrobium if not pro
 # PATHS
 FASTQ_DIR   = f"/ssd0/krinem/Sequence_data/{species}"
 DBS_DIR     = "/hdd0/susbus/databases"   # BUSCO databases
-ENV_DIR     = "/home/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
+ENV_DIR     = "/ssd0/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
 RESULTS_DIR = f"/ssd0/krinem/{species}_results"     # Results directory
-SRC_DIR     = "/home/krinem/UKCEH_Ecological_Genetics/Scripts"  # Scripts directory
+SRC_DIR     = "/ssd0/krinem/UKCEH_Ecological_Genetics/Scripts"  # Scripts directory
 
 ########
 # INPUT
