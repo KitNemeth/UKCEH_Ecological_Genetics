@@ -4,7 +4,7 @@ channels:
   - defaults
 dependencies:
   - busco=5.4.7
-  - python=3.9
+  - python=3.8
   - biopython<1.78
   - augustus
   - blast
