@@ -82,9 +82,9 @@ rule quality_filtering:
 
 rule assembler_flye:
     input:
-        filtered_fq=rules.quality_filtering.output.filtered_fq
+        filtered_fq = rules.quality_filtering.output.filtered_fq
     output:
-        assembly=os.path.join(RESULTS_DIR, "assembly/flye/{sample}_assembly.fasta")
+        assembly = os.path.join(RESULTS_DIR, "assembly/flye/{sample}/assembly.fasta")
     message:
         "Assembling genome using Flye"
     conda:
@@ -92,7 +92,9 @@ rule assembler_flye:
     threads: 48
     shell:
         """
-        flye --nano-raw {input.filtered_fq} --out-dir $(dirname {output.assembly}) --threads {threads}
+        flye --nano-raw {input.filtered_fq} \
+             --out-dir {RESULTS_DIR}/assembly/flye/{wildcards.sample} \
+             --threads {threads}
         """
 
 rule polish_medaka:
