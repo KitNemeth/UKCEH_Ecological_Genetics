@@ -149,5 +149,5 @@ rule quality_assessment:
             -o {wildcards.sample}_busco \
             --out_path $outdir \
             > {log} 2>&1
-        cp $outdir/{wildcards.sample}_busco/short_summary*.txt {output.quality_ass}
+        cp $outdir/*/short_summary*.txt {output.quality_ass}
         """
