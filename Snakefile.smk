@@ -119,7 +119,6 @@ rule polish_medaka:
             -d {input.asm} \
             -o $outdir \
             -t {threads} \
-            --chunk_size 2000000 \
             > {log} 2>&1
         cp $outdir/consensus.fasta {output.polished_assembly}
         """
