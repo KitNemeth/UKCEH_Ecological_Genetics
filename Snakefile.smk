@@ -109,7 +109,7 @@ rule polish_medaka:
         "Polishing assembly using Medaka"
     conda:
         os.path.join(ENV_DIR, "medaka.yaml")
-    threads: 8
+    threads: 16
     shell:
         """
         outdir=$(dirname {output.polished_assembly})/{wildcards.sample}_medaka_out
