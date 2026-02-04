@@ -12,7 +12,7 @@ configfile: "YAML/config.yaml"
 ########
 # PATHS
 data = config["data"]
-ENV_DIR     = "/ssd0/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
+ENV_DIR = "/ssd0/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
 clean = config["clean"]
 samples_file = config["samples_file"]
 
@@ -59,7 +59,7 @@ rule adapterremoval:
     log:
         "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/logs/{sample}_adapterremoval.log"
     conda:
-        "/ssd0/krinem/UKCEH_Ecological_Genetics/.snakemake/conda/adapterremoval.yaml"
+        os.path.join(ENV_DIR, "adapterremoval.yaml")
     shell:
         """
         AdapterRemoval \
@@ -80,6 +80,7 @@ rule adapterremoval:
             --collapse \
             > {log} 2>&1
         """
+
 
 
 
