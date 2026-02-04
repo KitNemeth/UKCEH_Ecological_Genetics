@@ -46,12 +46,14 @@ rule all:
 rule make_sample_dirs:
     output:
         directory(os.path.join(clean, "{sample}"))
+    shell:
+        "mkdir -p {output}"
 
 # AdapterRemoval rule
 rule adapterremoval:
     input:
-        r1=lambda wc: glob.glob(os.path.join(data, f"{samples[wc.sample]}*_R1*.fastq*"))[0],
-        r2=lambda wc: glob.glob(os.path.join(data, f"{samples[wc.sample]}*_R2*.fastq*"))[0]
+        r1=lambda wc: os.path.join(data, f"{wc.sample}_R1_001.fastq.gz"),
+        r2=lambda wc: os.path.join(data, f"{wc.sample}_R2_001.fastq.gz")
     output:
         r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
         r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
@@ -62,7 +64,7 @@ rule adapterremoval:
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
     shell:
         """
-        mkdir -p {os.path.join(clean, wc.sample)}
+        module load adapterremoval/2.3.1
         AdapterRemoval \
           --file1 {input.r1} \
           --file2 {input.r2} \
@@ -80,6 +82,7 @@ rule adapterremoval:
           --maxns 20 \
           --collapse
         """
+
 
 
 
