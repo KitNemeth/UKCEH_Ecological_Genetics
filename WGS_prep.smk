@@ -45,11 +45,11 @@ clean = config["clean"]
 analyses = config["analyses"]
 samples_file = config["samples_file"]
 
-# Ensure directories exist
+# Ensure directories exist 
 os.makedirs(clean, exist_ok=True)
 
-# Collect FASTQ files
-fastq_files = [f for f in glob.glob(os.path.join(data, "*.fastq")) if not os.path.basename(f).startswith("._")]
+# Collect FASTQ files (ignore macOS ._ files, handle .fastq.gz)
+fastq_files = [f for f in glob.glob(os.path.join(data, "*.fastq*")) if not os.path.basename(f).startswith("._")]
 
 # Build sample dictionary: short_name -> full seq_id
 samples = {}
@@ -59,14 +59,14 @@ if not os.path.exists(samples_file):
     with open(samples_file, "w") as f:
         for fq in fastq_files:
             base = os.path.basename(fq)
-            match = re.match(r"(.+)_R[12].*\.fastq", base)
+            match = re.match(r"(.+)_R[12].*\.fastq(?:\.gz)?$", base)
             if match:
                 seq_id = match.group(1)
-                # Use last underscore field as short name (customize if needed)
-                short = seq_id.split("_")[-1]
+                # Take first N fields as short name (customize as needed)
+                short = "_".join(seq_id.split("_")[:5])
                 if short not in samples:
                     samples[short] = seq_id
-                    f.write(f"{seq_id} {short}\n")
+                    f.write(f"{seq_id}\t{short}\n")
 else:
     # Read existing samples_file
     with open(samples_file) as f:
@@ -134,6 +134,7 @@ rule adapterremoval:
           --maxns 20 \
           --collapse
         """
+
 
 
 
