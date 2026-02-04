@@ -48,8 +48,10 @@ samples_file = config["samples_file"]
 # Ensure directories exist 
 os.makedirs(clean, exist_ok=True)
 
-# Collect FASTQ files (ignore macOS ._ files, handle .fastq.gz)
-fastq_files = [f for f in glob.glob(os.path.join(data, "*.fastq*")) if not os.path.basename(f).startswith("._")]
+# Match both uncompressed and gzipped FASTQ
+fastq_files = [f for f in glob.glob(os.path.join(data, "*.fastq*")) 
+               if not os.path.basename(f).startswith("._")]
+
 
 # Build sample dictionary: short_name -> full seq_id
 samples = {}
@@ -134,6 +136,7 @@ rule adapterremoval:
           --maxns 20 \
           --collapse
         """
+
 
 
 
