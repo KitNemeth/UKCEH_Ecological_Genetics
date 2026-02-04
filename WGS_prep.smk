@@ -39,24 +39,16 @@ clean = config["clean"]
 analyses = config["analyses"]
 samples_file = config["samples_file"]
 
-# read sample table
-samples = {}
-with open(config["samples_file"]) as f:
-    for line in f:
-        seq_id, sample = line.strip().split()
-        samples[sample] = seq_id
-
-# Ensure the main clean directory exists
+# Ensure directories exist
 os.makedirs(clean, exist_ok=True)
-os.makedirs(analyses, exist_ok=True)
 
-# Collect FASTQ files (ignore hidden files like .DS_Store or ._*)
+# Collect FASTQ files
 fastq_files = [f for f in glob.glob(os.path.join(data, "*.fastq")) if not os.path.basename(f).startswith("._")]
 
 # Build sample dictionary: short_name -> full seq_id
 samples = {}
 
-# Generate samples_file automatically if it doesn't exist
+# Generate samples_file if missing
 if not os.path.exists(samples_file):
     with open(samples_file, "w") as f:
         for fq in fastq_files:
@@ -64,7 +56,7 @@ if not os.path.exists(samples_file):
             match = re.match(r"(.+)_R[12].*\.fastq", base)
             if match:
                 seq_id = match.group(1)
-                # Customize short name as needed; here using last underscore field
+                # Use last underscore field as short name (customize if needed)
                 short = seq_id.split("_")[-1]
                 if short not in samples:
                     samples[short] = seq_id
@@ -76,7 +68,7 @@ else:
             seq_id, short = line.strip().split()
             samples[short] = seq_id
 
-# Make a list of all sample short names
+# List of sample names for expand()
 SAMPLES = list(samples.keys())
 
 ########
@@ -129,4 +121,5 @@ rule adapterremoval:
 rule all:
     input:
         expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq"), sample=SAMPLES)
+
 
