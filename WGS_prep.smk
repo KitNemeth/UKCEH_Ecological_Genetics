@@ -51,8 +51,7 @@ rule make_sample_dirs:
 rule adapterremoval:
     input:
         r1=lambda wc: glob.glob(os.path.join(data, f"{samples[wc.sample]}*_R1*.fastq*"))[0],
-        r2=lambda wc: glob.glob(os.path.join(data, f"{samples[wc.sample]}*_R2*.fastq*"))[0],
-        dirs=rules.make_sample_dirs.output
+        r2=lambda wc: glob.glob(os.path.join(data, f"{samples[wc.sample]}*_R2*.fastq*"))[0]
     output:
         r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
         r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
@@ -63,28 +62,25 @@ rule adapterremoval:
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
     shell:
         """
-        module load tools
-        module load gcc/15.1.0
-        module load adapterremoval/2.3.1
-
+        mkdir -p {os.path.join(clean, wc.sample)}
         AdapterRemoval \
           --file1 {input.r1} \
           --file2 {input.r2} \
+          --settings {output.settings} \
           --output1 {output.r1} \
           --output2 {output.r2} \
           --singleton {output.singleton} \
           --outputcollapsed {output.collapsed} \
           --outputcollapsedtruncated {output.collapsed_trunc} \
           --discarded {output.discarded} \
-          --settings {output.settings} \
           --trimns \
           --trimqualities \
           --minquality 20 \
           --minlength 25 \
           --maxns 20 \
-          --collapse \
-          --gzip
+          --collapse
         """
+
 
 
 
