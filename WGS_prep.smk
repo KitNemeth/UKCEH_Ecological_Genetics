@@ -78,6 +78,14 @@ else:
 SAMPLES = list(samples.keys())
 
 ########
+# RULE ALL
+rule all:
+    input:
+        # list all final outputs you want Snakemake to produce
+        expand(os.path.join(analyses, "{sample}", "{sample}_R1_truncated.fastq.gz"), sample=SAMPLES),
+        expand(os.path.join(analyses, "{sample}", "{sample}_R2_truncated.fastq.gz"), sample=SAMPLES)
+
+########
 # RULES
 
 # Create per-sample directories
@@ -127,6 +135,7 @@ rule adapterremoval:
 rule all:
     input:
         expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq"), sample=SAMPLES)
+
 
 
 
