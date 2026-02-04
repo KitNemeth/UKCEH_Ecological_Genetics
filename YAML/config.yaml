@@ -1,5 +1,5 @@
-SAMP: /home/projects/ku_00004/people/maxmue/popgen.kit
-data: /home/projects/ku_00004/data/Jill/raw_data/delivery_20250603-1536
-clean: /home/projects/ku_00004/people/maxmue/popgen.kit/data
-analyses: /home/projects/ku_00004/people/maxmue/popgen.kit/analyses
-samples_file: /home/projects/ku_00004/people/maxmue/popgen.kit/kaas.txt
+SAMP: "/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping"
+data: "/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/EG_FirstBatch_N182/FASTQ"
+clean: "/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/data"
+analyses: "/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/analyses"
+samples_file: "/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/samplesfile.txt"
