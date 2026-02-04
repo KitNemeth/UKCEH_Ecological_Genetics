@@ -1,6 +1,7 @@
 SAMP: "/home/krinem//mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping"
 data: "/home/krinem//mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/EG_FirstBatch_N182/FASTQ"
 clean: "/home/krinem//mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/data"
-analyses: "/home/krinem//mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/analyses"
-samples_file: "/home/krinem//mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/samplesfile.txt"
+analyses: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/analyses"
+samples_file: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/samplesfile.txt"
+
 
