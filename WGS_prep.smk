@@ -4,7 +4,6 @@
 
 import os
 import glob
-import re
 
 ########
 # CONFIG
@@ -18,37 +17,6 @@ samples_file = config["samples_file"]
 
 # Ensure clean directory exists
 os.makedirs(clean, exist_ok=True)
-
-########
-# Collect FASTQ files (gzipped or not)
-fastq_files = [f for f in glob.glob(os.path.join(data, "*.fastq*"))
-               if not os.path.basename(f).startswith("._")]
-
-########
-# Build samples dictionary: short_name -> base seq_id
-samples = {}
-
-# Generate samples_file if missing
-if not os.path.exists(samples_file):
-    with open(samples_file, "w") as f:
-        for fq in fastq_files:
-            base = os.path.basename(fq)
-            # Match and strip _R1/_R2 and _001 etc.
-            match = re.match(r"(.+)_R[12]_.*\.fastq(?:\.gz)?$", base)
-            if match:
-                seq_id = match.group(1)
-                if seq_id not in samples:
-                    samples[seq_id] = seq_id
-                    f.write(f"{seq_id}\t{seq_id}\n")
-else:
-    # Read existing samples_file
-    with open(samples_file) as f:
-        for line in f:
-            seq_id, short = line.strip().split()
-            samples[short] = seq_id
-
-# List of sample names for expand()
-SAMPLES = list(samples.keys())
 
 ########
 # RULES
@@ -106,3 +74,4 @@ rule all:
         expand(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"), sample=SAMPLES),
         expand(os.path.join(clean, "{sample}", "{sample}_collapsed_truncated.fastq.gz"), sample=SAMPLES),
         expand(os.path.join(clean, "{sample}", "{sample}_discarded.fastq.gz"), sample=SAMPLES)
+
