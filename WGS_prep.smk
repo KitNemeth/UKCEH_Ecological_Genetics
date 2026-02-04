@@ -12,7 +12,7 @@ configfile: "YAML/config.yaml"
 ########
 # PATHS
 data = config["data"]
-ENV_DIR = "/ssd0/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
+ENV_DIR     = "/ssd0/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
 clean = config["clean"]
 samples_file = config["samples_file"]
 
@@ -46,49 +46,34 @@ rule all:
 # AdapterRemoval rule
 rule adapterremoval:
     input:
-        r1="/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/EG_FirstBatch_N182/FASTQ/{sample}_R1_001.fastq.gz",
-        r2="/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/EG_FirstBatch_N182/FASTQ/{sample}_R2_001.fastq.gz"
+        r1=lambda wc: os.path.join(data, f"{wc.sample}_R1_001.fastq.gz"),
+        r2=lambda wc: os.path.join(data, f"{wc.sample}_R2_001.fastq.gz")
     output:
-        out1="/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/data/{sample}/{sample}_R1_truncated.fastq.gz",
-        out2="/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/data/{sample}/{sample}_R2_truncated.fastq.gz",
-        singleton="/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/data/{sample}/{sample}_singleton_truncated.fastq.gz",
-        collapsed="/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/data/{sample}/{sample}_collapsed.fastq.gz",
-        collapsed_trunc="/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/data/{sample}/{sample}_collapsed_truncated.fastq.gz",
-        discarded="/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/data/{sample}/{sample}_discarded.fastq.gz",
-        settings="/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/data/{sample}/{sample}.settings"
-    log:
-        "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/logs/{sample}_adapterremoval.log"
-    conda:
+        r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
+        r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
+        singleton=os.path.join(clean, "{sample}", "{sample}_singleton_truncated.fastq.gz"),
+        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"),
+        collapsed_trunc=os.path.join(clean, "{sample}", "{sample}_collapsed_truncated.fastq.gz"),
+        discarded=os.path.join(clean, "{sample}", "{sample}_discarded.fastq.gz"),
+        settings=os.path.join(clean, "{sample}", "{sample}.settings")
+    conda: 
         os.path.join(ENV_DIR, "adapterremoval.yaml")
     shell:
         """
-    AdapterRemoval \
-      --file1 "${input[0]}" \
-      --file2 "${input[1]}" \
-      --settings "${output.settings}" \
-      --output1 "${output[0]}" \
-      --output2 "${output[1]}" \
-      --singleton "${output[2]}" \
-      --outputcollapsed "${output[3]}" \
-      --outputcollapsedtruncated "${output[4]}" \
-      --discarded "${output[5]}" \
-      --trimns \
-      --trimqualities \
-      --minquality 20 \
-      --minlength 25 \
-      --maxns 20 \
-      --collapse \
-      > "${log}" 2>&1
+        AdapterRemoval \
+          --file1 "{input.r1}" \
+          --file2 "{input.r2}" \
+          --settings "{output.settings}" \
+          --output1 "{output.r1}" \
+          --output2 "{output.r2}" \
+          --singleton "{output.singleton}" \
+          --outputcollapsed "{output.collapsed}" \
+          --outputcollapsedtruncated "{output.collapsed_trunc}" \
+          --discarded "{output.discarded}" \
+          --trimns \
+          --trimqualities \
+          --minquality 20 \
+          --minlength 25 \
+          --maxns 20 \
+          --collapse
         """
-
-
-
-
-
-
-
-
-
-
-
-
