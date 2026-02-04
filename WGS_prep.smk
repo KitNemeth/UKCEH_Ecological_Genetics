@@ -131,10 +131,6 @@ rule adapterremoval:
           --collapse
         """
 
-# Final "all" rule
-rule all:
-    input:
-        expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq"), sample=SAMPLES)
 
 
 
