@@ -29,7 +29,7 @@ import glob
 
 ########
 # CONFIG
-configfile: "config.yaml"
+configfile: "YAML/config.yaml"
 
 ########
 # PATHS
@@ -129,3 +129,4 @@ rule adapterremoval:
 rule all:
     input:
         expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq"), sample=SAMPLES)
+
