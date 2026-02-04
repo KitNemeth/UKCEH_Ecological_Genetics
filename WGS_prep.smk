@@ -12,6 +12,7 @@ configfile: "YAML/config.yaml"
 ########
 # PATHS
 data = config["data"]
+ENV_DIR     = "/ssd0/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environments directory
 clean = config["clean"]
 samples_file = config["samples_file"]
 
@@ -55,6 +56,8 @@ rule adapterremoval:
         collapsed_trunc=os.path.join(clean, "{sample}", "{sample}_collapsed_truncated.fastq.gz"),
         discarded=os.path.join(clean, "{sample}", "{sample}_discarded.fastq.gz"),
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
+   conda: 
+        os.path.join(ENV_DIR, "adapterremoval.yaml")
     shell:
         """
         module load adapterremoval/2.3.1
@@ -75,6 +78,7 @@ rule adapterremoval:
           --maxns 20 \
           --collapse
         """
+
 
 
 
