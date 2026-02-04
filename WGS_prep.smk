@@ -62,23 +62,23 @@ rule adapterremoval:
         os.path.join(ENV_DIR, "adapterremoval.yaml")
     shell:
         """
-        AdapterRemoval \
-            --file1 {input.r1} \
-            --file2 {input.r2} \
-            --settings {output.settings} \
-            --output1 {output.out1} \
-            --output2 {output.out2} \
-            --singleton {output.singleton} \
-            --outputcollapsed {output.collapsed} \
-            --outputcollapsedtruncated {output.collapsed_trunc} \
-            --discarded {output.discarded} \
-            --trimns \
-            --trimqualities \
-            --minquality 20 \
-            --minlength 25 \
-            --maxns 20 \
-            --collapse \
-            > {log} 2>&1
+    AdapterRemoval \
+      --file1 "${input[0]}" \
+      --file2 "${input[1]}" \
+      --settings "${output.settings}" \
+      --output1 "${output[0]}" \
+      --output2 "${output[1]}" \
+      --singleton "${output[2]}" \
+      --outputcollapsed "${output[3]}" \
+      --outputcollapsedtruncated "${output[4]}" \
+      --discarded "${output[5]}" \
+      --trimns \
+      --trimqualities \
+      --minquality 20 \
+      --minlength 25 \
+      --maxns 20 \
+      --collapse \
+      > "${log}" 2>&1
         """
 
 
