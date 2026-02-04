@@ -42,13 +42,6 @@ rule all:
 ########
 # RULES
 
-# Rule: create per-sample directories
-rule make_sample_dirs:
-    output:
-        directory(os.path.join(clean, "{sample}"))
-    shell:
-        "mkdir -p {output}"
-
 # AdapterRemoval rule
 rule adapterremoval:
     input:
@@ -82,6 +75,7 @@ rule adapterremoval:
           --maxns 20 \
           --collapse
         """
+
 
 
 
