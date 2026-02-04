@@ -30,7 +30,7 @@ import glob
 ########
 # Mount
 # --- Check that the CIFS share is mounted ---
-if not os.path.ismount("/mount/cifs_07793_newLEAF"):
+if not os.path.ismount("/home/krinem/mount/cifs_07793_newLEAF"):
     raise RuntimeError("CIFS share is not mounted. Run 'mountp_newleaf' first.")
 
 ########
@@ -127,6 +127,7 @@ rule adapterremoval:
 rule all:
     input:
         expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq"), sample=SAMPLES)
+
 
 
 
