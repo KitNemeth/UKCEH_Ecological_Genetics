@@ -60,7 +60,6 @@ rule adapterremoval:
         os.path.join(ENV_DIR, "adapterremoval.yaml")
     shell:
         """
-        module load adapterremoval/2.3.1
         AdapterRemoval \
           --file1 "{input.r1}" \
           --file2 "{input.r2}" \
@@ -78,6 +77,7 @@ rule adapterremoval:
           --maxns 20 \
           --collapse
         """
+
 
 
 
