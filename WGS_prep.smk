@@ -59,15 +59,15 @@ rule adapterremoval:
         """
         module load adapterremoval/2.3.1
         AdapterRemoval \
-          --file1 {input.r1} \
-          --file2 {input.r2} \
-          --settings {output.settings} \
-          --output1 {output.r1} \
-          --output2 {output.r2} \
-          --singleton {output.singleton} \
-          --outputcollapsed {output.collapsed} \
-          --outputcollapsedtruncated {output.collapsed_trunc} \
-          --discarded {output.discarded} \
+          --file1 "{input.r1}" \
+          --file2 "{input.r2}" \
+          --settings "{output.settings}" \
+          --output1 "{output.r1}" \
+          --output2 "{output.r2}" \
+          --singleton "{output.singleton}" \
+          --outputcollapsed "{output.collapsed}" \
+          --outputcollapsedtruncated "{output.collapsed_trunc}" \
+          --discarded "{output.discarded}" \
           --trimns \
           --trimqualities \
           --minquality 20 \
