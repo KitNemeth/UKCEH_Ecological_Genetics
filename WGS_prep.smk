@@ -16,9 +16,6 @@ ENV_DIR     = "/ssd0/krinem/UKCEH_Ecological_Genetics/YAML"  # Conda environment
 clean = config["clean"]
 samples_file = config["samples_file"]
 
-# Ensure clean directory exists
-os.makedirs(clean, exist_ok=True)
-
 # Read samplesfile.txt (provided manually)
 samples = {}
 with open(samples_file) as f:
@@ -60,6 +57,7 @@ rule adapterremoval:
         os.path.join(ENV_DIR, "adapterremoval.yaml")
     shell:
         """
+        mkdir -p $(dirname {output.r1})
         AdapterRemoval \
           --file1 "{input.r1}" \
           --file2 "{input.r2}" \
@@ -77,3 +75,4 @@ rule adapterremoval:
           --maxns 20 \
           --collapse
         """
+
