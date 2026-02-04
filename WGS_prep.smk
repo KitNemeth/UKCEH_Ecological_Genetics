@@ -56,7 +56,7 @@ rule adapterremoval:
         collapsed_trunc=os.path.join(clean, "{sample}", "{sample}_collapsed_truncated.fastq.gz"),
         discarded=os.path.join(clean, "{sample}", "{sample}_discarded.fastq.gz"),
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
-   conda: 
+    conda: 
         os.path.join(ENV_DIR, "adapterremoval.yaml")
     shell:
         """
@@ -78,6 +78,7 @@ rule adapterremoval:
           --maxns 20 \
           --collapse
         """
+
 
 
 
