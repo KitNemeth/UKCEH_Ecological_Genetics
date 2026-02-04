@@ -18,6 +18,16 @@ samples_file = config["samples_file"]
 # Ensure clean directory exists
 os.makedirs(clean, exist_ok=True)
 
+# Read samplesfile.txt (provided manually)
+samples = {}
+with open(samples_file) as f:
+    for line in f:
+        seq_id, short = line.strip().split()
+        samples[short] = seq_id
+
+# List of sample names for expand()
+SAMPLES = sorted(samples.keys())
+
 ########
 # RULES
 
@@ -74,4 +84,5 @@ rule all:
         expand(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"), sample=SAMPLES),
         expand(os.path.join(clean, "{sample}", "{sample}_collapsed_truncated.fastq.gz"), sample=SAMPLES),
         expand(os.path.join(clean, "{sample}", "{sample}_discarded.fastq.gz"), sample=SAMPLES)
+
 
