@@ -81,9 +81,13 @@ SAMPLES = list(samples.keys())
 # RULE ALL
 rule all:
     input:
-        # list all final outputs you want Snakemake to produce
-        expand(os.path.join(analyses, "{sample}", "{sample}_R1_truncated.fastq.gz"), sample=SAMPLES),
-        expand(os.path.join(analyses, "{sample}", "{sample}_R2_truncated.fastq.gz"), sample=SAMPLES)
+        # AdapterRemoval outputs
+        expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"), sample=SAMPLES),
+        expand(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"), sample=SAMPLES),
+        expand(os.path.join(clean, "{sample}", "{sample}_singleton_truncated.fastq.gz"), sample=SAMPLES),
+        expand(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"), sample=SAMPLES),
+        expand(os.path.join(clean, "{sample}", "{sample}_collapsed_truncated.fastq.gz"), sample=SAMPLES),
+        expand(os.path.join(clean, "{sample}", "{sample}_discarded.fastq.gz"), sample=SAMPLES)
 
 ########
 # RULES
@@ -130,6 +134,7 @@ rule adapterremoval:
           --maxns 20 \
           --collapse
         """
+
 
 
 
