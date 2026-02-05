@@ -1,11 +1,10 @@
-SAMP: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping"
-data: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/EG_FirstBatch_N182/FASTQ"
+SAMP: "/ssd0/krinem/Oak_genotyping"
+data: "/ssd0/krinem/Oak_genotyping/FASTQ"   # <-- point to local copy
 clean: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/data"
 analyses: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/analyses"
-samples_file: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/samplesfile.txt"
+samples_file: "/ssd0/krinem/Oak_genotyping/samplesfile.txt"  # if you copied it locally too
 map: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/mapping"
 
 REF: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/DarwinTreeOfLife/ncbi_dataset/data/GCA_932294415.1/GCA_932294415.1_dhQueRobu3.1_genomic.fna"
 
 jar: "/services/tools/picard-tools/2.26.10"
-
