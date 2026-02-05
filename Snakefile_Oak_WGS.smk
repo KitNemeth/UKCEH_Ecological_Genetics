@@ -102,21 +102,39 @@ rule bowtie2_index:
         """
 
 ########
+# Build Bowtie2 index
+rule bowtie2_index:
+    input:
+        fasta=REF_FASTA
+    output:
+        expand(
+            REF_INDEX + ".{n}.bt2",
+            n=[1, 2, 3, 4, "rev.1", "rev.2"]
+        )
+    threads: 4
+    conda:
+        os.path.join(ENV_DIR, "bowtie2.yaml")
+    shell:
+        """
+        bowtie2-build {input.fasta} {REF_INDEX}
+        """
+
+########
 # Bowtie2 mapping (per sample, parallelizable with -j)
 rule map_reads:
     input:
-        r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
-        r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
-        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"),
+        r1=temp(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz")),
+        r2=temp(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz")),
+        collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
         index=expand(
             REF_INDEX + ".{n}.bt2",
             n=[1, 2, 3, 4, "rev.1", "rev.2"]
         )
     output:
-        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")
+        bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))  # temp: deleted after q30 filter
     threads: 4
     resources:
-        mem_mb=16000  # 16GB per job
+        mem_mb=16000
     conda:
         os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
@@ -135,9 +153,9 @@ rule map_reads:
 # Filter BAMs for Q30
 rule filter_q30:
     input:
-        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")
+        bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))  # temp: deleted after dedup
     output:
-        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam")
+        bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"))  # temp: deleted after dedup
     conda:
         os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
@@ -152,8 +170,8 @@ rule remove_duplicates:
     input:
         bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam")
     output:
-        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30_rmDup.bam"),
-        metrics=os.path.join(map_dir, "{sample}", "{sample}_Qrob_Dup.txt")
+        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30_rmDup.bam"),  # final BAM: kept permanently
+        metrics=os.path.join(map_dir, "{sample}", "{sample}_Qrob_Dup.txt")      # kept permanently
     conda:
         os.path.join(ENV_DIR, "picard.yaml")
     shell:
