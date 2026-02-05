@@ -97,6 +97,8 @@ rule map_reads:
     output:
         bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")
     threads: 4
+    resources:
+        mem_mb=16000  # 16GB per job
     conda:
         os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
