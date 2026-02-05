@@ -103,6 +103,7 @@ rule map_reads:
         os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
         """
+        set -euo pipefail
         mkdir -p $(dirname {output.bam})
         bowtie2 -p {threads} -x {REF} --no-unal \
             -1 {input.r1} \
