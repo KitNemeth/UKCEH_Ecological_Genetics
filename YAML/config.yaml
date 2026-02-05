@@ -1,10 +1,23 @@
+# Local SSD project folder
 SAMP: "/ssd0/krinem/Oak_genotyping"
-data: "/ssd0/krinem/Oak_genotyping/FASTQ"   # <-- point to local copy
-clean: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/data"
-analyses: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/analyses"
-samples_file: "/ssd0/krinem/Oak_genotyping/samplesfile.txt"  # if you copied it locally too
-map: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/mapping"
 
+# Input raw FASTQs (can stay on network mount or copy subset to SSD)
+data: "/ssd0/krinem/Oak_genotyping/EG_FirstBatch_N182/FASTQ"
+
+# AdapterRemoval / trimmed / cleaned outputs
+clean: "/ssd0/krinem/Oak_genotyping/data"
+
+# Analysis outputs (filtered, mapped, deduped)
+analyses: "/ssd0/krinem/Oak_genotyping/analyses"
+
+# Sample file (list of samples to process)
+samples_file: "/ssd0/krinem/Oak_genotyping/samplesfile.txt"
+
+# Mapping outputs
+map: "/ssd0/krinem/Oak_genotyping/mapping"
+
+# Reference genome (can stay on network mount)
 REF: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/DarwinTreeOfLife/ncbi_dataset/data/GCA_932294415.1/GCA_932294415.1_dhQueRobu3.1_genomic.fna"
 
+# Picard jar location (unchanged)
 jar: "/services/tools/picard-tools/2.26.10"
