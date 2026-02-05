@@ -16,7 +16,8 @@ clean = config["clean"]
 samples_file = config["samples_file"]
 analyses = config["analyses"]
 map_dir = config["map"]
-REF = config["REF"]
+REF_FASTA = config["reference"]["fasta"]
+REF_INDEX = config["reference"]["index_prefix"]
 
 ########
 # Read samplesfile.txt
@@ -88,12 +89,34 @@ rule adapterremoval:
         """
 
 ########
+# Build Bowtie2 index
+rule bowtie2_index:
+    input:
+        fasta=REF_FASTA
+    output:
+        expand(
+            REF_INDEX + ".{n}.bt2",
+            n=[1, 2, 3, 4, "rev.1", "rev.2"]
+        )
+    threads: 4
+    conda:
+        os.path.join(ENV_DIR, "bowtie2.yaml")
+    shell:
+        """
+        bowtie2-build {input.fasta} {REF_INDEX}
+        """
+
+########
 # Bowtie2 mapping (per sample, parallelizable with -j)
 rule map_reads:
     input:
         r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
         r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
-        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")
+        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"),
+        index=expand(
+            REF_INDEX + ".{n}.bt2",
+            n=[1, 2, 3, 4, "rev.1", "rev.2"]
+        )
     output:
         bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")
     threads: 4
@@ -105,7 +128,7 @@ rule map_reads:
         """
         set -euo pipefail
         mkdir -p $(dirname {output.bam})
-        bowtie2 -p {threads} -x {REF} --no-unal \
+        bowtie2 -p {threads} -x {REF_INDEX} --no-unal \
             -1 {input.r1} \
             -2 {input.r2} \
             -U {input.collapsed} | \
