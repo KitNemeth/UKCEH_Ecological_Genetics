@@ -4,6 +4,6 @@ clean: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/d
 analyses: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/analyses"
 samples_file: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/samplesfile.txt"
 map: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/mapping"
-REF: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/DarwinTreeOfLife"
-picard:
+REF: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/DarwinTreeOfLife/ncbi_dataset/data/GCA_932294415.1/GCA_932294415.1_dhQueRobu3.1_genomic.fna"
   jar: "/services/tools/picard-tools/2.26.10"
+
