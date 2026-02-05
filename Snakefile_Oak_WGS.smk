@@ -58,12 +58,11 @@ rule adapterremoval:
         r1=os.path.join(data, "{sample}_R1_001.fastq.gz"),
         r2=os.path.join(data, "{sample}_R2_001.fastq.gz")
     output:
-        r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
-        r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
-        singleton=os.path.join(clean, "{sample}", "{sample}_singleton_truncated.fastq.gz"),
-        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"),
-        collapsed_trunc=os.path.join(clean, "{sample}", "{sample}_collapsed_truncated.fastq.gz"),
-        discarded=os.path.join(clean, "{sample}", "{sample}_discarded.fastq.gz"),
+        # Only keep outputs needed for mapping
+        r1=temp(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz")),
+        r2=temp(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz")),
+        collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
+        # Optional: keep .settings for logging / QC
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
     conda:
         os.path.join(ENV_DIR, "adapterremoval.yaml")
@@ -76,15 +75,11 @@ rule adapterremoval:
           --settings {output.settings} \
           --output1 {output.r1} \
           --output2 {output.r2} \
-          --singleton {output.singleton} \
           --outputcollapsed {output.collapsed} \
-          --outputcollapsedtruncated {output.collapsed_trunc} \
-          --discarded {output.discarded} \
           --trimns \
           --trimqualities \
           --minquality 20 \
           --minlength 25 \
-          --maxns 20 \
           --collapse
         """
 
