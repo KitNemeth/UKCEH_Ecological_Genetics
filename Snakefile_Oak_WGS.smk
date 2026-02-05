@@ -96,28 +96,24 @@ rule adapterremoval:
         """
 
 # Bowtie2 mapping in batches
-rule map_reads_batch:
+rule map_reads:
     input:
-        r1=lambda wc: [os.path.join(clean, s, f"{s}_R1_truncated.fastq.gz") for s in BATCHES[wc.batch]],
-        r2=lambda wc: [os.path.join(clean, s, f"{s}_R2_truncated.fastq.gz") for s in BATCHES[wc.batch]],
-        collapsed=lambda wc: [os.path.join(clean, s, f"{s}_collapsed.fastq.gz") for s in BATCHES[wc.batch]]
+        r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
+        r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
+        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")
     output:
-        bam=lambda wc: [os.path.join(map_dir, s, f"{s}_Qrob.bam") for s in BATCHES[wc.batch]]
-    params:
-        batch=lambda wc: BATCHES[wc.batch]
+        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")
+    threads: 4
     conda: os.path.join(ENV_DIR, "bowtie2.yaml")
-    threads: 4  # multi-threaded per sample
     shell:
         """
-        for s in {params.batch}; do
-            mkdir -p {map_dir}/$s
-            bowtie2 -p {threads} -x {REF} --no-unal \
-                -1 {clean}/$s/${s}_R1_truncated.fastq.gz \
-                -2 {clean}/$s/${s}_R2_truncated.fastq.gz \
-                -U {clean}/$s/${s}_collapsed.fastq.gz | \
-            samtools view -bS - | \
-            samtools sort -o {map_dir}/$s/${s}_Qrob.bam
-        done
+        mkdir -p $(dirname {output.bam})
+        bowtie2 -p {threads} -x {REF} --no-unal \
+            -1 {input.r1} \
+            -2 {input.r2} \
+            -U {input.collapsed} | \
+        samtools view -bS - | \
+        samtools sort -o {output.bam}
         """
 
 # Filter BAMs for Q30
