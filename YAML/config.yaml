@@ -17,7 +17,8 @@ samples_file: "/ssd0/krinem/Oak_genotyping/samplesfile.txt"
 map: "/ssd0/krinem/Oak_genotyping/mapping"
 
 # Reference genome (can stay on network mount)
-REF: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/DarwinTreeOfLife/ncbi_dataset/data/GCA_932294415.1/GCA_932294415.1_dhQueRobu3.1_genomic.fna"
+REF: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/DarwinTreeOfLife/ncbi_dataset/data/GCA_932294415.1/GCA_932294415.1_dhQueRobu3.1_genomic"
 
 # Picard jar location (unchanged)
 jar: "/services/tools/picard-tools/2.26.10"
+
