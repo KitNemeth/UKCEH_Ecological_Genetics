@@ -5,3 +5,5 @@ analyses: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotypin
 samples_file: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/samplesfile.txt"
 map: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/mapping"
 REF: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak genotyping/DarwinTreeOfLife"
+picard:
+  jar: "/services/tools/picard-tools/2.26.10"
