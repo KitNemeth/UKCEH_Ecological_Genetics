@@ -30,12 +30,6 @@ with open(samples_file) as f:
 SAMPLES = sorted(samples.keys())
 
 ########
-# Batching configuration for Bowtie2
-BATCH_SIZE = 15
-BATCHES = [SAMPLES[i:i+BATCH_SIZE] for i in range(0, len(SAMPLES), BATCH_SIZE)]
-BATCH_IDS = list(range(len(BATCHES)))
-
-########
 # Rule: all
 rule all:
     input:
@@ -57,13 +51,11 @@ rule all:
         expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30_rmDup.bam"), sample=SAMPLES)
 
 ########
-# RULES
-
 # AdapterRemoval
 rule adapterremoval:
     input:
-        r1=lambda wc: os.path.join(data, f"{wc.sample}_R1_001.fastq.gz"),
-        r2=lambda wc: os.path.join(data, f"{wc.sample}_R2_001.fastq.gz")
+        r1=os.path.join(data, "{sample}_R1_001.fastq.gz"),
+        r2=os.path.join(data, "{sample}_R2_001.fastq.gz")
     output:
         r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
         r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
@@ -78,15 +70,15 @@ rule adapterremoval:
         """
         mkdir -p $(dirname {output.r1})
         AdapterRemoval \
-          --file1 "{input.r1}" \
-          --file2 "{input.r2}" \
-          --settings "{output.settings}" \
-          --output1 "{output.r1}" \
-          --output2 "{output.r2}" \
-          --singleton "{output.singleton}" \
-          --outputcollapsed "{output.collapsed}" \
-          --outputcollapsedtruncated "{output.collapsed_trunc}" \
-          --discarded "{output.discarded}" \
+          --file1 {input.r1} \
+          --file2 {input.r2} \
+          --settings {output.settings} \
+          --output1 {output.r1} \
+          --output2 {output.r2} \
+          --singleton {output.singleton} \
+          --outputcollapsed {output.collapsed} \
+          --outputcollapsedtruncated {output.collapsed_trunc} \
+          --discarded {output.discarded} \
           --trimns \
           --trimqualities \
           --minquality 20 \
@@ -95,7 +87,8 @@ rule adapterremoval:
           --collapse
         """
 
-# Bowtie2 mapping in batches
+########
+# Bowtie2 mapping (per sample, parallelizable with -j)
 rule map_reads:
     input:
         r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
@@ -104,7 +97,8 @@ rule map_reads:
     output:
         bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")
     threads: 4
-    conda: os.path.join(ENV_DIR, "bowtie2.yaml")
+    conda:
+        os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
         """
         mkdir -p $(dirname {output.bam})
@@ -116,6 +110,7 @@ rule map_reads:
         samtools sort -o {output.bam}
         """
 
+########
 # Filter BAMs for Q30
 rule filter_q30:
     input:
@@ -130,6 +125,7 @@ rule filter_q30:
         samtools view -b -q 30 {input.bam} > {output.bam}
         """
 
+########
 # Remove duplicates using Picard
 rule remove_duplicates:
     input:
