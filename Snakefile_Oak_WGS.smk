@@ -18,6 +18,7 @@ analyses = config["analyses"]
 map_dir = config["map"]
 REF_FASTA = config["reference"]["fasta"]
 REF_INDEX = config["reference"]["index_prefix"]
+benchmark_dir = "benchmarks"
 
 ########
 # Read samplesfile.txt
@@ -61,6 +62,8 @@ rule adapterremoval:
         collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
         # Optional: keep .settings for logging / QC
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
+    benchmark:
+        os.path.join(benchmark_dir, "adapterremoval", "{sample}.txt")
     conda:
         os.path.join(ENV_DIR, "adapterremoval.yaml")
     shell:
@@ -91,6 +94,8 @@ rule bowtie2_index:
             n=[1, 2, 3, 4, "rev.1", "rev.2"]
         )
     threads: 4
+    benchmark:
+        os.path.join(benchmark_dir, "bowtie2_index", "index.txt")
     conda:
         os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
@@ -114,6 +119,8 @@ rule map_reads:
     threads: 16
     resources:
         mem_mb=16000
+    benchmark:
+        os.path.join(benchmark_dir, "map_reads", "{sample}.txt")
     conda:
         os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
@@ -135,6 +142,8 @@ rule filter_q30:
         bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))  # temp: deleted after dedup
     output:
         bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"))  # temp: deleted after dedup
+    benchmark:
+        os.path.join(benchmark_dir, "filter_q30", "{sample}.txt")
     conda:
         os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
@@ -151,6 +160,8 @@ rule remove_duplicates:
     output:
         bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30_rmDup.bam"),  # final BAM: kept permanently
         metrics=os.path.join(map_dir, "{sample}", "{sample}_Qrob_Dup.txt")      # kept permanently
+    benchmark:
+        os.path.join(benchmark_dir, "remove_duplicates", "{sample}.txt")
     conda:
         os.path.join(ENV_DIR, "picard.yaml")
     shell:
