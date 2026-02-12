@@ -107,9 +107,9 @@ rule bowtie2_index:
 # Bowtie2 mapping (per sample, parallelizable with -j)
 rule map_reads:
     input:
-        r1=temp(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz")),
-        r2=temp(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz")),
-        collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
+        r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
+        r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
+        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"),
         index=expand(
             REF_INDEX + ".{n}.bt2",
             n=[1, 2, 3, 4, "rev.1", "rev.2"]
@@ -139,7 +139,7 @@ rule map_reads:
 # Filter BAMs for Q30
 rule filter_q30:
     input:
-        bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))  # temp: deleted after dedup
+        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")  # temp: deleted after dedup
     output:
         bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"))  # temp: deleted after dedup
     benchmark:
