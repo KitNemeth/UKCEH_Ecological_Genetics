@@ -102,24 +102,6 @@ rule bowtie2_index:
         """
 
 ########
-# Build Bowtie2 index
-rule bowtie2_index:
-    input:
-        fasta=REF_FASTA
-    output:
-        expand(
-            REF_INDEX + ".{n}.bt2",
-            n=[1, 2, 3, 4, "rev.1", "rev.2"]
-        )
-    threads: 4
-    conda:
-        os.path.join(ENV_DIR, "bowtie2.yaml")
-    shell:
-        """
-        bowtie2-build {input.fasta} {REF_INDEX}
-        """
-
-########
 # Bowtie2 mapping (per sample, parallelizable with -j)
 rule map_reads:
     input:
