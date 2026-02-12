@@ -1,29 +1,30 @@
 # Local SSD project folder
-SAMP: "/ssd0/krinem/Oak_genotyping"
+SAMP: "/hdd0/krinem/Oak_genotyping"
 
 # Input raw FASTQs (can stay on network mount or copy subset to SSD)
-data: "/ssd0/krinem/Oak_genotyping/FASTQ"
+data: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/FASTQ"
 
 # AdapterRemoval / trimmed / cleaned outputs
-clean: "/ssd0/krinem/Oak_genotyping/data"
+clean: "/hdd0/krinem/Oak_genotyping/data"
 
 # Analysis outputs (filtered, mapped, deduped)
-analyses: "/ssd0/krinem/Oak_genotyping/analyses"
+analyses: "/hdd0/krinem/Oak_genotyping/analyses"
 
 # Sample file (list of samples to process)
-samples_file: "/ssd0/krinem/Oak_genotyping/samplesfile.txt"
+samples_file: "/hdd0/krinem/Oak_genotyping/samplesfile.txt"
 
 # Mapping outputs
-map: "/ssd0/krinem/Oak_genotyping/mapping"
+map: "/hdd0/krinem/Oak_genotyping/mapping"
 
 # Reference genome
 reference:
   # Original FASTA (read-only, OK on network mount)
-  fasta: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/DarwinTreeOfLife/ncbi_dataset/data/GCA_932294415.1/GCA_932294415.1_dhQueRobu3.1_genomic.fna"
+  fasta: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/Masked_genome/GCA_932294415.1.fasta.masked.masked"
 
   # Bowtie2 index prefix (build on local SSD for speed)
-  index_prefix: "/ssd0/krinem/Oak_genotyping/reference/Qrob_dhQueRobu3.1"
+  index_prefix: "/hdd0/krinem/Oak_genotyping/reference/Qrob_GCA932294415.1_masked"
 
 # Picard jar location
 jar: "/services/tools/picard-tools/2.26.10"
+
 
