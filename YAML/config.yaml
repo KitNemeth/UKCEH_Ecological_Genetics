@@ -2,7 +2,7 @@
 SAMP: "/hdd0/krinem/Oak_genotyping"
 
 # Input raw FASTQs (can stay on network mount or copy subset to SSD)
-data: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/FASTQ"
+data: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/EG_FirstBatch_N182/FASTQ"
 
 # AdapterRemoval / trimmed / cleaned outputs
 clean: "/hdd0/krinem/Oak_genotyping/data"
@@ -26,6 +26,7 @@ reference:
 
 # Picard jar location
 jar: "/services/tools/picard-tools/2.26.10"
+
 
 
 
