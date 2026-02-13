@@ -118,9 +118,9 @@ rule map_reads:
         )
     output:
         bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))  # temp: deleted after q30 filter
-    threads: 8
+    threads: 16
     resources:
-        mem_mb=12000
+        mem_mb=16000
     benchmark:
         os.path.join(benchmark_dir, "map_reads", "{sample}.txt")
     conda:
