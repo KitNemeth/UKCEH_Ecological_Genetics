@@ -63,6 +63,7 @@ rule adapterremoval:
     threads: 16
     resources:
         mem_mb=16000
+    max_retries: 3
     conda: "/ssd0/krinem/UKCEH_Ecological_Genetics/.snakemake/conda/ea8c355b3aaed03147896dccde89b3b4_"
     shell:
         """
@@ -80,7 +81,6 @@ rule adapterremoval:
             --minlength 25 \
             --collapse
         """
-    max_retries: 3
 
 ########
 # Build Bowtie2 index
