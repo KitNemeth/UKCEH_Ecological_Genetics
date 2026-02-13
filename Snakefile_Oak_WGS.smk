@@ -53,37 +53,34 @@ rule all:
 # AdapterRemoval
 rule adapterremoval:
     input:
-        r1=os.path.join(data, "{sample}_R1_001.fastq.gz"),
-        r2=os.path.join(data, "{sample}_R2_001.fastq.gz")
+        r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
+        r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz")
     output:
-        # Only keep outputs needed for mapping
-        r1=temp(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz")),
-        r2=temp(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz")),
-        collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
-        # Optional: keep .settings for logging / QC
+        r1_truncated=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
+        r2_truncated=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
+        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"),
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
+    threads: 16
     resources:
-        mem_mb=4000
-    benchmark:
-        os.path.join(benchmark_dir, "adapterremoval", "{sample}.txt")
-    conda:
-        os.path.join(ENV_DIR, "adapterremoval.yaml")
+        mem_mb=16000
+    conda: "/ssd0/krinem/UKCEH_Ecological_Genetics/.snakemake/conda/ea8c355b3aaed03147896dccde89b3b4_"
     shell:
         """
-        mkdir -p $(dirname {output.r1})
+        mkdir -p $(dirname {output.r1_truncated})
         AdapterRemoval \
-          --file1 {input.r1} \
-          --file2 {input.r2} \
-          --settings {output.settings} \
-          --output1 {output.r1} \
-          --output2 {output.r2} \
-          --outputcollapsed {output.collapsed} \
-          --trimns \
-          --trimqualities \
-          --minquality 20 \
-          --minlength 25 \
-          --collapse
+            --file1 {input.r1} \
+            --file2 {input.r2} \
+            --settings {output.settings} \
+            --output1 {output.r1_truncated} \
+            --output2 {output.r2_truncated} \
+            --outputcollapsed {output.collapsed} \
+            --trimns \
+            --trimqualities \
+            --minquality 20 \
+            --minlength 25 \
+            --collapse
         """
+    max_retries: 3
 
 ########
 # Build Bowtie2 index
