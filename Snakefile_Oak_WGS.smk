@@ -62,6 +62,8 @@ rule adapterremoval:
         collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
         # Optional: keep .settings for logging / QC
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
+    resources:
+        mem_mb=4000
     benchmark:
         os.path.join(benchmark_dir, "adapterremoval", "{sample}.txt")
     conda:
@@ -116,9 +118,9 @@ rule map_reads:
         )
     output:
         bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))  # temp: deleted after q30 filter
-    threads: 16
+    threads: 8
     resources:
-        mem_mb=16000
+        mem_mb=12000
     benchmark:
         os.path.join(benchmark_dir, "map_reads", "{sample}.txt")
     conda:
