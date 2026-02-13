@@ -63,6 +63,10 @@ rule adapterremoval:
         collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
         # Optional: keep .settings for logging / QC
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
+    threads: 16
+    resources:
+        mem_mb=16000,
+        io_slot=1   # limit number of concurrent AdapterRemoval jobs
     benchmark:
         os.path.join(benchmark_dir, "adapterremoval", "{sample}.txt")
     conda:
