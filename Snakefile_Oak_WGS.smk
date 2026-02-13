@@ -1,3 +1,4 @@
+
 # ==========================================================
 # WGS Data Preparation and Adapter Trimming Pipeline
 # ==========================================================
@@ -53,31 +54,34 @@ rule all:
 # AdapterRemoval
 rule adapterremoval:
     input:
-        r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
-        r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz")
+        r1=os.path.join(data, "{sample}_R1_001.fastq.gz"),
+        r2=os.path.join(data, "{sample}_R2_001.fastq.gz")
     output:
-        r1_truncated=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
-        r2_truncated=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
-        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"),
+        # Only keep outputs needed for mapping
+        r1=temp(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz")),
+        r2=temp(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz")),
+        collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
+        # Optional: keep .settings for logging / QC
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
-    threads: 16
-    resources:
-        mem_mb=16000
+    benchmark:
+        os.path.join(benchmark_dir, "adapterremoval", "{sample}.txt")
+    conda:
+        os.path.join(ENV_DIR, "adapterremoval.yaml")
     shell:
         """
-        mkdir -p $(dirname {output.r1_truncated})
+        mkdir -p $(dirname {output.r1})
         AdapterRemoval \
-            --file1 {input.r1} \
-            --file2 {input.r2} \
-            --settings {output.settings} \
-            --output1 {output.r1_truncated} \
-            --output2 {output.r2_truncated} \
-            --outputcollapsed {output.collapsed} \
-            --trimns \
-            --trimqualities \
-            --minquality 20 \
-            --minlength 25 \
-            --collapse
+          --file1 {input.r1} \
+          --file2 {input.r2} \
+          --settings {output.settings} \
+          --output1 {output.r1} \
+          --output2 {output.r2} \
+          --outputcollapsed {output.collapsed} \
+          --trimns \
+          --trimqualities \
+          --minquality 20 \
+          --minlength 25 \
+          --collapse
         """
 
 ########
