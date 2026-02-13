@@ -72,8 +72,9 @@ rule adapterremoval:
     conda:
         os.path.join(ENV_DIR, "adapterremoval.yaml")
     shell:
-        """
-        mkdir -p $(dirname {output.r1})
+         """
+        mkdir -p $(dirname {output.r1}) $(dirname {output.r2}) $(dirname {output.collapsed})
+        export TMPDIR=/hdd0/krinem/tmp
         AdapterRemoval \
           --file1 {input.r1} \
           --file2 {input.r2} \
