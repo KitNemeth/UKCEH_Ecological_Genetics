@@ -71,6 +71,7 @@ rule adapterremoval:
         os.path.join(benchmark_dir, "adapterremoval", "{sample}.txt")
     conda:
         os.path.join(ENV_DIR, "adapterremoval.yaml")
+    retries: 3      # <--- retry up to 3 times if the job fails
     shell:
          """
         mkdir -p $(dirname {output.r1}) $(dirname {output.r2}) $(dirname {output.collapsed})
