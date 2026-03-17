@@ -120,7 +120,7 @@ rule map_reads:
             n=[1, 2, 3, 4, "rev.1", "rev.2"]
         )
     output:
-        bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))  # temp: deleted after q30 filter
+        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")  # temp: deleted after q30 filter
     threads: 16
     resources:
         mem_mb=16000
@@ -146,7 +146,7 @@ rule filter_q30:
     input:
         bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")  # temp: deleted after dedup
     output:
-        bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"))  # temp: deleted after dedup
+        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam")  # temp: deleted after dedup
     benchmark:
         os.path.join(benchmark_dir, "filter_q30", "{sample}.txt")
     conda:
