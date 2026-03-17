@@ -36,6 +36,8 @@ SAMPLES = sorted(samples.keys())
 rule all:
     input:
         # AdapterRemoval outputs
+        expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"), sample=SAMPLES),
+        expand(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"), sample=SAMPLES),
         expand(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"), sample=SAMPLES),
 
         # Bowtie2 mapped BAMs
@@ -54,10 +56,11 @@ rule adapterremoval:
         r1=os.path.join(data, "{sample}_R1_001.fastq.gz"),
         r2=os.path.join(data, "{sample}_R2_001.fastq.gz")
     output:
-    # Only keep outputs needed for mapping; truncated are temporary
+        # Only keep outputs needed for mapping
         r1=temp(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz")),
         r2=temp(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz")),
-        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"),
+        collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
+        # Optional: keep .settings for logging / QC
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
     threads: 16
     resources:
