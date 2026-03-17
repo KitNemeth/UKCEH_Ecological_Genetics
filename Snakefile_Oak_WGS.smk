@@ -36,8 +36,6 @@ SAMPLES = sorted(samples.keys())
 rule all:
     input:
         # AdapterRemoval outputs
-        expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"), sample=SAMPLES),
-        expand(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"), sample=SAMPLES),
         expand(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"), sample=SAMPLES),
 
         # Bowtie2 mapped BAMs
