@@ -36,18 +36,6 @@ SAMPLES = sorted(samples.keys())
 # Rule: all
 rule all:
     input:
-        # AdapterRemoval outputs
-        expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"), sample=SAMPLES),
-        expand(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"), sample=SAMPLES),
-        expand(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"), sample=SAMPLES),
-
-        # Bowtie2 mapped BAMs
-        expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"), sample=SAMPLES),
-
-        # Filtered BAMs (q30)
-        expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"), sample=SAMPLES),
-
-        # Deduplicated BAMs
         expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30_rmDup.bam"), sample=SAMPLES)
 
 ########
