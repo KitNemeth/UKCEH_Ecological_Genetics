@@ -3,7 +3,7 @@
 # ==========================================================
 
 import os
-
+#run with snakemake s- Snakefile_Oak_WGS.smk -cores -j ...
 ########
 # CONFIG
 configfile: "YAML/config.yaml"
@@ -36,15 +36,13 @@ SAMPLES = sorted(samples.keys())
 rule all:
     input:
         # AdapterRemoval outputs
-        expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"), sample=SAMPLES),
-        expand(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"), sample=SAMPLES),
-        expand(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"), sample=SAMPLES),
-
+        #expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"), sample=SAMPLES),
+        #expand(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"), sample=SAMPLES),
+        #expand(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"), sample=SAMPLES),
         # Bowtie2 mapped BAMs
-        expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"), sample=SAMPLES),
-
+        #expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"), sample=SAMPLES),
         # Filtered BAMs (q30)
-        expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"), sample=SAMPLES),
+        #expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"), sample=SAMPLES),
 
         # Deduplicated BAMs
         expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30_rmDup.bam"), sample=SAMPLES)
@@ -57,15 +55,12 @@ rule adapterremoval:
         r2=os.path.join(data, "{sample}_R2_001.fastq.gz")
     output:
         # Only keep outputs needed for mapping
-        r1=os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
-        r2=os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
-        collapsed=os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"),
+        r1=temp(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz")),
+        r2=temp(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz")),
+        collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
         # Optional: keep .settings for logging / QC
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
     threads: 16
-    resources:
-        mem_mb=16000,
-        io_slot=1   # limit number of concurrent AdapterRemoval jobs
     benchmark:
         os.path.join(benchmark_dir, "adapterremoval", "{sample}.txt")
     conda:
@@ -121,10 +116,8 @@ rule map_reads:
             n=[1, 2, 3, 4, "rev.1", "rev.2"]
         )
     output:
-        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")  # temp: deleted after q30 filter
+        bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))  # temp: deleted after q30 filter
     threads: 16
-    resources:
-        mem_mb=16000
     benchmark:
         os.path.join(benchmark_dir, "map_reads", "{sample}.txt")
     conda:
@@ -147,7 +140,7 @@ rule filter_q30:
     input:
         bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")  # temp: deleted after dedup
     output:
-        bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam")  # temp: deleted after dedup
+        bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"))  # temp: deleted after dedup
     benchmark:
         os.path.join(benchmark_dir, "filter_q30", "{sample}.txt")
     conda:
