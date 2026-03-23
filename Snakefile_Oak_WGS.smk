@@ -128,7 +128,7 @@ rule map_reads:
             n=[1, 2, 3, 4, "rev.1", "rev.2"]
         )
     output:
-        bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))  # temp: deleted after q30 filter
+        bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))
     log:
         os.path.join(map_dir, "{sample}", "map_reads.log")
     threads: 16
@@ -140,12 +140,25 @@ rule map_reads:
         """
         set -euo pipefail
         mkdir -p $(dirname {output.bam})
-        bowtie2 -p {threads} -x {REF_INDEX} --no-unal \
-            -1 {input.r1} \
-            -2 {input.r2} \
-            -U {input.collapsed} | \
-        samtools view -bS - | \
-        samtools sort -o {output.bam} 2>> {log}
+
+        # Redirect all output (stdout + stderr) to log
+        {
+            echo "=== Starting Bowtie2 mapping for {wildcards.sample} ==="
+            date
+
+            echo "--- bowtie2 ---"
+            TMPDIR=/tmp bowtie2 -p {threads} -x {REF_INDEX} --no-unal \
+                -1 {input.r1} -2 {input.r2} -U {input.collapsed}
+
+            echo "--- samtools view ---"
+            samtools view -bS - 
+
+            echo "--- samtools sort ---"
+            samtools sort -m 4G -@ 8 -T /tmp/sort_{wildcards.sample} -o {output.bam}
+
+            echo "=== Finished mapping for {wildcards.sample} ==="
+            date
+        } &> {log}
         """
 
 ########
