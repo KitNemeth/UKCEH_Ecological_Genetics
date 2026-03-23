@@ -142,7 +142,7 @@ rule map_reads:
         mkdir -p $(dirname {output.bam})
 
         # Redirect all output (stdout + stderr) to log
-        {
+        {{
             echo "=== Starting Bowtie2 mapping for {wildcards.sample} ==="
             date
 
@@ -158,7 +158,7 @@ rule map_reads:
 
             echo "=== Finished mapping for {wildcards.sample} ==="
             date
-        } &> {log}
+        }} &> {log}
         """
 
 ########
