@@ -35,17 +35,24 @@ SAMPLES = sorted(samples.keys())
 # Rule: all
 rule all:
     input:
-        # AdapterRemoval outputs
-        #expand(os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"), sample=SAMPLES),
-        #expand(os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"), sample=SAMPLES),
-        #expand(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"), sample=SAMPLES),
-        # Bowtie2 mapped BAMs
-        #expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"), sample=SAMPLES),
-        # Filtered BAMs (q30)
-        #expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"), sample=SAMPLES),
+        [
+            # AdapterRemoval outputs
+            #os.path.join(clean, "{sample}", "{sample}_R1_truncated.fastq.gz"),
+            #os.path.join(clean, "{sample}", "{sample}_R2_truncated.fastq.gz"),
+            #os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz"),
 
-        # Deduplicated BAMs
-        expand(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30_rmDup.bam"), sample=SAMPLES)
+            # Bowtie2 mapped BAMs
+            #os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"),
+
+            # Filtered BAMs (q30)
+            #os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"),
+
+            # Final outputs
+            expand(
+                os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30_rmDup.bam"),
+                sample=SAMPLES
+            )
+        ]
 
 ########
 # AdapterRemoval
@@ -60,6 +67,8 @@ rule adapterremoval:
         collapsed=temp(os.path.join(clean, "{sample}", "{sample}_collapsed.fastq.gz")),
         # Optional: keep .settings for logging / QC
         settings=os.path.join(clean, "{sample}", "{sample}.settings")
+    log:
+        os.path.join(clean, "{sample}", "adapterremoval.log")
     threads: 16
     benchmark:
         os.path.join(benchmark_dir, "adapterremoval", "{sample}.txt")
@@ -81,7 +90,8 @@ rule adapterremoval:
           --trimqualities \
           --minquality 20 \
           --minlength 25 \
-          --collapse
+          --collapse \
+          > {log} 2>&1
         """
 
 ########
@@ -94,6 +104,8 @@ rule bowtie2_index:
             REF_INDEX + ".{n}.bt2",
             n=[1, 2, 3, 4, "rev.1", "rev.2"]
         )
+    log:
+        os.path.join(benchmark_dir, "bowtie2_index", "index.log")
     threads: 4
     benchmark:
         os.path.join(benchmark_dir, "bowtie2_index", "index.txt")
@@ -101,7 +113,7 @@ rule bowtie2_index:
         os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
         """
-        bowtie2-build {input.fasta} {REF_INDEX}
+        bowtie2-build {input.fasta} {REF_INDEX} > {log} 2>&1
         """
 
 ########
@@ -117,7 +129,8 @@ rule map_reads:
         )
     output:
         bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))  # temp: deleted after q30 filter
-    threads: 16
+    log:
+        os.path.join(map_dir, "{sample}", "map_reads.log")threads: 16
     benchmark:
         os.path.join(benchmark_dir, "map_reads", "{sample}.txt")
     conda:
@@ -131,7 +144,7 @@ rule map_reads:
             -2 {input.r2} \
             -U {input.collapsed} | \
         samtools view -bS - | \
-        samtools sort -o {output.bam}
+        samtools sort -o {output.bam} 2>> {log}
         """
 
 ########
@@ -141,6 +154,8 @@ rule filter_q30:
         bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam")  # temp: deleted after dedup
     output:
         bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30.bam"))  # temp: deleted after dedup
+    log:
+        os.path.join(map_dir, "{sample}", "filter_q30.log")
     benchmark:
         os.path.join(benchmark_dir, "filter_q30", "{sample}.txt")
     conda:
@@ -148,7 +163,7 @@ rule filter_q30:
     shell:
         """
         mkdir -p $(dirname {output.bam})
-        samtools view -b -q 30 {input.bam} > {output.bam}
+        samtools view -b -q 30 {input.bam} > {output.bam} 2> {log}
         """
 
 ########
@@ -159,6 +174,8 @@ rule remove_duplicates:
     output:
         bam=os.path.join(map_dir, "{sample}", "{sample}_Qrob_q30_rmDup.bam"),  # final BAM: kept permanently
         metrics=os.path.join(map_dir, "{sample}", "{sample}_Qrob_Dup.txt")      # kept permanently
+    log:
+        os.path.join(map_dir, "{sample}", "remove_duplicates.log")
     benchmark:
         os.path.join(benchmark_dir, "remove_duplicates", "{sample}.txt")
     conda:
@@ -169,5 +186,6 @@ rule remove_duplicates:
         picard MarkDuplicates \
             -I {input.bam} \
             -O {output.bam} \
-            -M {output.metrics}
+            -M {output.metrics} \
+            > {log} 2>&1
         """
