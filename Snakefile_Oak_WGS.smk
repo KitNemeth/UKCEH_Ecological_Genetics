@@ -131,35 +131,27 @@ rule map_reads:
         bam=temp(os.path.join(map_dir, "{sample}", "{sample}_Qrob.bam"))
     log:
         os.path.join(map_dir, "{sample}", "map_reads.log")
-    threads: 16
+    threads: 8
     benchmark:
         os.path.join(benchmark_dir, "map_reads", "{sample}.txt")
     conda:
         os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
-        """
-        set -euo pipefail
-        mkdir -p $(dirname {output.bam})
+    """
+    set -euo pipefail
+    mkdir -p $(dirname {output.bam})
 
-        # Redirect all output (stdout + stderr) to log
-        {{
-            echo "=== Starting Bowtie2 mapping for {wildcards.sample} ==="
-            date
+    echo "=== Starting Bowtie2 mapping for {wildcards.sample} ===" >> {log}
+    date >> {log}
 
-            echo "--- bowtie2 ---"
-            TMPDIR=/tmp bowtie2 -p {threads} -x {REF_INDEX} --no-unal \
-                -1 {input.r1} -2 {input.r2} -U {input.collapsed}
+    TMPDIR=/tmp bowtie2 -p 8 -x {REF_INDEX} --no-unal \
+        -1 {input.r1} -2 {input.r2} -U {input.collapsed} 2>> {log} | \
+    samtools view -bS - 2>> {log} | \
+    samtools sort -m 2G -@ 4 -T /tmp/sort_{wildcards.sample} -o {output.bam} 2>> {log}
 
-            echo "--- samtools view ---"
-            samtools view -bS - 
-
-            echo "--- samtools sort ---"
-            samtools sort -m 4G -@ 8 -T /tmp/sort_{wildcards.sample} -o {output.bam}
-
-            echo "=== Finished mapping for {wildcards.sample} ==="
-            date
-        }} &> {log}
-        """
+    echo "=== Finished mapping for {wildcards.sample} ===" >> {log}
+    date >> {log}
+    """
 
 ########
 # Filter BAMs for Q30
