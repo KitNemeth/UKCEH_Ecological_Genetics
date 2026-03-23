@@ -74,7 +74,6 @@ rule adapterremoval:
         os.path.join(benchmark_dir, "adapterremoval", "{sample}.txt")
     conda:
         os.path.join(ENV_DIR, "adapterremoval.yaml")
-    retries: 3      # <--- retry up to 3 times if the job fails
     shell:
          """
         mkdir -p $(dirname {output.r1}) $(dirname {output.r2}) $(dirname {output.collapsed})
@@ -137,21 +136,21 @@ rule map_reads:
     conda:
         os.path.join(ENV_DIR, "bowtie2.yaml")
     shell:
-    """
-    set -euo pipefail
-    mkdir -p $(dirname {output.bam})
+        """
+        set -euo pipefail
+        mkdir -p $(dirname {output.bam})
 
-    echo "=== Starting Bowtie2 mapping for {wildcards.sample} ===" >> {log}
-    date >> {log}
+        echo "=== Starting Bowtie2 mapping for {wildcards.sample} ===" >> {log}
+        date >> {log}
 
-    TMPDIR=/tmp bowtie2 -p 8 -x {REF_INDEX} --no-unal \
-        -1 {input.r1} -2 {input.r2} -U {input.collapsed} 2>> {log} | \
-    samtools view -bS - 2>> {log} | \
-    samtools sort -m 2G -@ 4 -T /tmp/sort_{wildcards.sample} -o {output.bam} 2>> {log}
+        TMPDIR=/tmp bowtie2 -p 8 -x {REF_INDEX} --no-unal \
+            -1 {input.r1} -2 {input.r2} -U {input.collapsed} 2>> {log} | \
+        samtools view -bS - 2>> {log} | \
+        samtools sort -m 2G -@ 4 -T /tmp/sort_{wildcards.sample} -o {output.bam} 2>> {log}
 
-    echo "=== Finished mapping for {wildcards.sample} ===" >> {log}
-    date >> {log}
-    """
+        echo "=== Finished mapping for {wildcards.sample} ===" >> {log}
+        date >> {log}
+        """
 
 ########
 # Filter BAMs for Q30
