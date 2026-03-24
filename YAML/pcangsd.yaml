@@ -1,0 +1,11 @@
+name: pcangsd
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pcangsd
+  - numpy
+  - scipy
+  - htslib
