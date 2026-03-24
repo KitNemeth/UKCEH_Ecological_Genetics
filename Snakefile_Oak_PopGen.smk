@@ -47,6 +47,8 @@ rule angsd:
         out=config["angsd"]["out"],
         a=config["angsd"]
     threads: config["angsd"]["threads"]
+    conda:
+        os.path.join(ENV_DIR, "angsd.yaml")
     shell:
         """
         angsd \
@@ -89,6 +91,8 @@ rule ngsadmix:
     params:
         threads=config["ngsadmix"]["threads"]
     threads: config["ngsadmix"]["threads"]
+    conda:
+        os.path.join(ENV_DIR, "ngsadmix.yaml")
     shell:
         """
         NGSadmix \
@@ -112,6 +116,8 @@ rule pcangsd:
         out=config["pcangsd"]["out_prefix"],
         threads=config["pcangsd"]["threads"]
     threads: config["pcangsd"]["threads"]
+    conda:
+        os.path.join(ENV_DIR, "pcangsd.yaml")
     shell:
         """
         pcangsd.py \
