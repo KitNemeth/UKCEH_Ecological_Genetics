@@ -1,0 +1,11 @@
+name: angsd
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - angsd=0.940
+  - htslib
+  - gsl
+  - zlib
+  - libdeflate
