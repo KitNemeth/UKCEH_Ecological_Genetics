@@ -102,7 +102,7 @@ rule ngsadmix:
     log:
         "logs/ngsadmix/K{K}.log"
     conda:
-        os.path.join(ENV_DIR, "ngsadmix.yaml")
+        os.path.join(ENV_DIR, "angsd.yaml")
     shell:
         """
         NGSadmix \
