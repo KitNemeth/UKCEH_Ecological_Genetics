@@ -54,7 +54,7 @@ angsd:
   geno_minDepth: 3
   geno_maxDepth: 1000
   postCutoff: 0.95
-  threads: 8
+  threads: 24
 
 # ----------------------------------------------------------
 # NGSadmix parameters
@@ -62,7 +62,7 @@ angsd:
 
 ngsadmix:
   K: [2, 3, 4, 5, 6, 7, 8, 9, 10]
-  threads: 8
+  threads: 2
   out_prefix: "/hdd0/krinem/Oak_genotyping/analyses/ngsadmix/admix"
 
 # ----------------------------------------------------------
@@ -70,6 +70,6 @@ ngsadmix:
 # ----------------------------------------------------------
 
 pcangsd:
-  threads: 8
+  threads: 24
   ld_threshold: 0.2
   out_prefix: "/hdd0/krinem/Oak_genotyping/analyses/pcangsd/pcangsd"
