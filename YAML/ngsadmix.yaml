@@ -1,0 +1,9 @@
+name: ngsadmix
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - ngsadmix
+  - htslib
+  - zlib
