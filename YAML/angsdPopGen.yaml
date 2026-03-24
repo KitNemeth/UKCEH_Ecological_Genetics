@@ -43,6 +43,7 @@ outputs:
 # ----------------------------------------------------------
 
 angsd:
+  out: "/hdd0/krinem/Oak_genotyping/geno/angsd"
   uniqueOnly: 1
   remove_bads: 1
   trim: 0
