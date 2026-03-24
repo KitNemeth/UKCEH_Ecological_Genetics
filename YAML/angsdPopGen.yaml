@@ -1,7 +1,6 @@
 # ==========================================================
 # Genotype Likelihood–Based Population Genomics Pipeline
 # ==========================================================
-# Base project directory
 
 project: "/hdd0/krinem/Oak_genotyping"
 
@@ -9,10 +8,7 @@ project: "/hdd0/krinem/Oak_genotyping"
 # Input data
 # ----------------------------------------------------------
 
-# BAM list file (one BAM per line)
 bamlist: "/hdd0/krinem/Oak_genotyping/bams.txt"
-
-# Directory containing BAMs
 bam_dir: "/hdd0/krinem/Oak_genotyping/mapping"
 
 # ----------------------------------------------------------
@@ -31,12 +27,6 @@ outputs:
   angsd:    "/hdd0/krinem/Oak_genotyping/geno"
   ngsadmix: "/hdd0/krinem/Oak_genotyping/analyses/ngsadmix"
   pcangsd:  "/hdd0/krinem/Oak_genotyping/analyses/pcangsd"
-  
-  angsd:
-  out: "/hdd0/krinem/Oak_genotyping/geno/angsd"
-  
-  pcangsd:
-  out_prefix: "/hdd0/krinem/Oak_genotyping/analyses/pcangsd/angsd"
 
 # ----------------------------------------------------------
 # ANGSD parameters
@@ -73,6 +63,7 @@ angsd:
 ngsadmix:
   K: [2, 3, 4, 5, 6, 7, 8, 9, 10]
   threads: 8
+  out_prefix: "/hdd0/krinem/Oak_genotyping/analyses/ngsadmix/admix"
 
 # ----------------------------------------------------------
 # PCAngsd parameters
@@ -80,4 +71,5 @@ ngsadmix:
 
 pcangsd:
   threads: 8
-  ld_threshold: 0.2   # optional
+  ld_threshold: 0.2
+  out_prefix: "/hdd0/krinem/Oak_genotyping/analyses/pcangsd/pcangsd"
