@@ -20,7 +20,7 @@ os.makedirs("logs/ngsadmix", exist_ok=True)
 os.makedirs("logs/pcangsd", exist_ok=True)
 
 # ----------------------------------------------------------
-# Rule: all
+# Rule: alls
 # ----------------------------------------------------------
 
 rule all:
