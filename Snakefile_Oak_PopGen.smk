@@ -14,6 +14,11 @@ benchmark_dir = "benchmarks"
 bamlist = config["bamlist"]
 REF_FASTA = config["reference"]["fasta"]
 
+# Ensure log directory exists
+os.makedirs("logs/angsd", exist_ok=True)
+os.makedirs("logs/ngsadmix", exist_ok=True)
+os.makedirs("logs/pcangsd", exist_ok=True)
+
 # ----------------------------------------------------------
 # Rule: all
 # ----------------------------------------------------------
@@ -47,6 +52,8 @@ rule angsd:
         out=config["angsd"]["out"],
         a=config["angsd"]
     threads: config["angsd"]["threads"]
+    log:
+        "logs/angsd/angsd.log"
     conda:
         os.path.join(ENV_DIR, "angsd.yaml")
     shell:
@@ -75,7 +82,8 @@ rule angsd:
             -geno_minDepth {params.a[geno_minDepth]} \
             -geno_maxDepth {params.a[geno_maxDepth]} \
             -postCutoff {params.a[postCutoff]} \
-            -P {threads}
+            -P {threads} \
+            > {log} 2>&1
         """
 
 
@@ -91,6 +99,8 @@ rule ngsadmix:
     params:
         threads=config["ngsadmix"]["threads"]
     threads: config["ngsadmix"]["threads"]
+    log:
+        "logs/ngsadmix/K{K}.log"
     conda:
         os.path.join(ENV_DIR, "ngsadmix.yaml")
     shell:
@@ -99,7 +109,8 @@ rule ngsadmix:
             -likes {input.geno} \
             -K {wildcards.K} \
             -P {threads} \
-            -outfiles analyses/ngsadmix/admix_K{wildcards.K}-1
+            -outfiles analyses/ngsadmix/admix_K{wildcards.K}-1 \
+            > {log} 2>&1
         """
 
 
@@ -116,6 +127,8 @@ rule pcangsd:
         out=config["pcangsd"]["out_prefix"],
         threads=config["pcangsd"]["threads"]
     threads: config["pcangsd"]["threads"]
+    log:
+        "logs/pcangsd/pcangsd.log"
     conda:
         os.path.join(ENV_DIR, "pcangsd.yaml")
     shell:
@@ -123,5 +136,6 @@ rule pcangsd:
         pcangsd.py \
             -beagle {input.geno} \
             -o {params.out} \
-            -threads {threads}
+            -threads {threads} \
+            > {log} 2>&1
         """
