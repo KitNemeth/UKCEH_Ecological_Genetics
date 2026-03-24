@@ -16,8 +16,8 @@ bam_dir: "/hdd0/krinem/Oak_genotyping/mapping"
 # ----------------------------------------------------------
 
 reference:
-  fasta: "/hdd0/krinem/Oak_genotyping/reference/GCA_932294415.1.fasta"
-  fai:   "/hdd0/krinem/Oak_genotyping/reference/GCA_932294415.1.fasta.fai"
+  fasta: "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/Masked_genome/GCA_932294415.1.masked.fasta"
+  fai:   "/home/krinem/mount/cifs_07793_newLEAF/Workfiles/WP4/Oak/Oak_genotyping/Masked_genome/GCA_932294415.1.masked.fasta.fai"
 
 # ----------------------------------------------------------
 # Output directories
