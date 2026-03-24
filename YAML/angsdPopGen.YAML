@@ -1,0 +1,76 @@
+# ==========================================================
+# Genotype Likelihood–Based Population Genomics Pipeline
+# ==========================================================
+# Base project directory
+
+project: "/hdd0/krinem/Oak_genotyping"
+
+# ----------------------------------------------------------
+# Input data
+# ----------------------------------------------------------
+
+# BAM list file (one BAM per line)
+bamlist: "/hdd0/krinem/Oak_genotyping/bams.txt"
+
+# Directory containing BAMs
+bam_dir: "/hdd0/krinem/Oak_genotyping/mapping"
+
+# ----------------------------------------------------------
+# Reference genome
+# ----------------------------------------------------------
+
+reference:
+  fasta: "/hdd0/krinem/Oak_genotyping/reference/GCA_932294415.1.fasta"
+  fai:   "/hdd0/krinem/Oak_genotyping/reference/GCA_932294415.1.fasta.fai"
+
+# ----------------------------------------------------------
+# Output directories
+# ----------------------------------------------------------
+
+outputs:
+  angsd:    "/hdd0/krinem/Oak_genotyping/geno"
+  ngsadmix: "/hdd0/krinem/Oak_genotyping/analyses/ngsadmix"
+  pcangsd:  "/hdd0/krinem/Oak_genotyping/analyses/pcangsd"
+
+# ----------------------------------------------------------
+# ANGSD parameters
+# ----------------------------------------------------------
+
+angsd:
+  uniqueOnly: 1
+  remove_bads: 1
+  trim: 0
+  C: 50
+  baq: 1
+  minMapQ: 20
+  minQ: 36
+  docounts: 1
+  setMaxDepthInd: 1000
+  gl: 1
+  doMajorMinor: 1
+  doMaf: 1
+  doGlf: 2
+  doPost: 1
+  SNP_pval: 1e-6
+  doGeno: 21
+  ignore_RG: 0
+  geno_minDepth: 3
+  geno_maxDepth: 1000
+  postCutoff: 0.95
+  threads: 8
+
+# ----------------------------------------------------------
+# NGSadmix parameters
+# ----------------------------------------------------------
+
+ngsadmix:
+  K: [2, 3, 4, 5]
+  threads: 8
+
+# ----------------------------------------------------------
+# PCAngsd parameters
+# ----------------------------------------------------------
+
+pcangsd:
+  threads: 8
+  ld_threshold: 0.2   # optional
