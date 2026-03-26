@@ -20,23 +20,15 @@ os.makedirs("logs/ngsadmix", exist_ok=True)
 os.makedirs("logs/pcangsd", exist_ok=True)
 
 # ----------------------------------------------------------
-# Rule: alls
+# Rule: all
 # ----------------------------------------------------------
 
 rule all:
     input:
-        # ANGSD output
         config["angsd"]["out"] + ".beagle.gz",
-
-        # NGSadmix outputs for each K
-        expand(
-            "analyses/ngsadmix/admix_K{K}-1.qopt",
-            K=config["ngsadmix"]["K"]
-        ),
-
-        # PCAngsd output
+        expand("analyses/ngsadmix/admix_K{K}-1.qopt",
+               K=config["ngsadmix"]["K"]),
         config["pcangsd"]["out_prefix"] + ".cov.npy"
-
 
 # ----------------------------------------------------------
 # 1. ANGSD
@@ -86,7 +78,6 @@ rule angsd:
             > {log} 2>&1
         """
 
-
 # ----------------------------------------------------------
 # 2. NGSadmix
 # ----------------------------------------------------------
@@ -113,7 +104,6 @@ rule ngsadmix:
             > {log} 2>&1
         """
 
-
 # ----------------------------------------------------------
 # 3. PCAngsd
 # ----------------------------------------------------------
@@ -133,9 +123,9 @@ rule pcangsd:
         os.path.join(ENV_DIR, "pcangsd.yaml")
     shell:
         """
-        pcangsd.py \
-            -beagle {input.geno} \
+        pcangsd \
+            -b {input.geno} \
             -o {params.out} \
-            -threads {threads} \
+            -t {threads} \
             > {log} 2>&1
         """

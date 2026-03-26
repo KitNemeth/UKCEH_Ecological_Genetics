@@ -1,0 +1,53 @@
+# Snakemake
+.snakemake/
+*.snakemake.log
+dag.png
+
+# Conda
+.env/
+.conda/
+*.yaml~
+
+# Editors
+*.swp
+*.swo
+*.vscode/
+
+# Logs
+*.log
+logs/
+
+# Large data files
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.bam
+*.bam.bai
+*.sam
+*.cram
+*.cram.crai
+
+# Outputs
+*.vcf
+*.vcf.gz
+*.vcf.gz.tbi
+*.bcf
+*.bcf.csi
+*.npy
+*.beagle.gz
+*.qopt
+*.cov.npy
+
+# BUSCO
+busco_*/
+busco_*.log
+busco_downloads/
+
+# Temporary files
+*.tmp
+*.temp
+*.truncated
+*.truncated.gz
+*.discarded
+*.discarded.gz

@@ -1,0 +1,17 @@
+# ----------------------------------------------------------
+# General configuration
+# ----------------------------------------------------------
+
+# Prefix for output files
+outprefix: "/hdd0/krinem/Oak_genotyping/geno/oak"
+
+# Reference genome
+reference:
+  fasta: "/hdd0/krinem/Oak_genotyping/Masked_genome/GCA_932294415.1.masked.fasta"
+  fai:   "/hdd0/krinem/Oak_genotyping/Masked_genome/GCA_932294415.1.masked.fasta.fai"
+
+# BAM list
+bamlist: "/hdd0/krinem/Oak_genotyping/bams.txt"
+
+# Directory containing population files
+popdir: "/hdd0/krinem/Oak_genotyping/samples/pops"
